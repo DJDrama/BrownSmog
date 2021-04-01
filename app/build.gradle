@@ -57,8 +57,20 @@ dependencies {
 
     // Navigation
     implementation "androidx.navigation:navigation-compose:1.0.0-alpha09"
+    implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0-beta01'
 
     // Material Icons
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+
+    // okhttp3 logging
+    def okhttp3_logging_version = "4.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_logging_version"
+
+    // Moshi
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+    implementation "com.squareup.moshi:moshi-kotlin:1.11.0"
 
 }
