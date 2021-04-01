@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BrownSmog</string>
+    <string name="brown_smog">미세먼지</string>
+    <string name="local_smog">지역별</string>
 </resources>
