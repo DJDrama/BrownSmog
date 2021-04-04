@@ -1,6 +1,7 @@
 package com.dj.brownsmog.di
 
 import com.dj.brownsmog.network.BASE_URL
+import com.dj.brownsmog.network.RetrofitService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -57,7 +58,7 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit.Builder): RetrofitModule {
-        return retrofit.build().create(RetrofitModule::class.java)
+    fun provideApiService(retrofit: Retrofit.Builder): RetrofitService {
+        return retrofit.build().create(RetrofitService::class.java)
     }
 }
