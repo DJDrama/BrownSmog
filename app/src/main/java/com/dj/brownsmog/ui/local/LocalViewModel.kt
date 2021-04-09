@@ -17,8 +17,12 @@ import javax.inject.Inject
 class LocalViewModel
 @Inject
 constructor(
-    val repository: HomeRepository,
+    private val repository: HomeRepository,
 ) : ViewModel() {
+
+    private val _sidoNameItems: MutableStateFlow<Set<String>> = MutableStateFlow(emptySet())
+    val sidoNameItems: StateFlow<Set<String>>
+        get() = _sidoNameItems
 
     private val _sidoByulItems: MutableStateFlow<List<SidoItem>?> = MutableStateFlow(null)
     val sidoByulItems: StateFlow<List<SidoItem>?>
@@ -30,9 +34,13 @@ constructor(
 
     fun getSidoByulItems() {
         viewModelScope.launch(IO) {
-            _sidoByulItems.value = repository.getSidoMeasuredData() ?: emptyList()
-            Log.e("check", "come ehere? " + _sidoByulItems.value?.size)
-
+            val measuredDatum = repository.getSidoMeasuredData()
+            measuredDatum?.let{
+                _sidoNameItems.value = it.map{sidoItem->
+                    sidoItem.sidoName
+                }.toSet()
+                _sidoByulItems.value = it
+            }
         }
     }
 }
