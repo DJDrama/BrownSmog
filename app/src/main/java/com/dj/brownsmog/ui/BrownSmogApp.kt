@@ -1,5 +1,7 @@
 package com.dj.brownsmog.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -10,6 +12,7 @@ import androidx.compose.material.icons.filled.BlurOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.HiltViewModelFactory
@@ -73,30 +76,33 @@ fun BrownSmogApp() {
             }
 
         ) {
-            NavHost(navController, startDestination = Screen.BrownSmog.route) {
-                composable(Screen.BrownSmog.route) {
-                    Home(navController = navController)
-                }
-                composable(Screen.LocalSmog.route) {
-                    Local(onNavigate = {
-                        navController.navigate(route = it)
-                    })
-                }
-                composable(route = Screen.LocalDetail.route + "/{sidoName}",
-                    arguments = listOf(
-                        navArgument("sidoName") {
-                            type = NavType.StringType
-                        }
-                    )) { navBackStackEntry ->
-                    val viewModel = viewModel<LocalDetailViewModel>(
-                        Screen.LocalDetail.route,
-                        HiltViewModelFactory(LocalContext.current, navBackStackEntry)
-                    )
-                    LocalDetailScreen(navController = navController,
-                        viewModel = viewModel,
-                        sidoName = navBackStackEntry.arguments?.getString("sidoName") ?: "")
+            Box(modifier = Modifier.padding(it)) {
+                NavHost(navController, startDestination = Screen.BrownSmog.route) {
+                    composable(Screen.BrownSmog.route) {
+                        Home(navController = navController)
+                    }
+                    composable(Screen.LocalSmog.route) {
+                        Local(onNavigate = {
+                            navController.navigate(route = it)
+                        })
+                    }
+                    composable(route = Screen.LocalDetail.route + "/{sidoName}",
+                        arguments = listOf(
+                            navArgument("sidoName") {
+                                type = NavType.StringType
+                            }
+                        )) { navBackStackEntry ->
+                        val viewModel = viewModel<LocalDetailViewModel>(
+                            Screen.LocalDetail.route,
+                            HiltViewModelFactory(LocalContext.current, navBackStackEntry)
+                        )
+                        LocalDetailScreen(navController = navController,
+                            viewModel = viewModel,
+                            sidoName = navBackStackEntry.arguments?.getString("sidoName") ?: "")
+                    }
                 }
             }
+
         }
     }
 }
