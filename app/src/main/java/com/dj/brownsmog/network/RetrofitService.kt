@@ -22,7 +22,7 @@ interface RetrofitService {
         //시도별 미세먼지 현황
         @Query("pageNo") pageNo: Int=1,
         @Query("numOfRows") numOfRows: Int = 1000,
-        @Query("sidoName") sidoName: String = SidoName.ALL.str,
+        @Query("sidoName") sidoName: String,
         @Query("returnType") returnType: String = JSON,
         @Query("serviceKey") serviceKey: String,
         @Query("ver") version: String = VERSION,

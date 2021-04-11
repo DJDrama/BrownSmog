@@ -15,15 +15,16 @@ constructor(
     private val retrofitService: RetrofitService,
 ) {
 
-    suspend fun getSidoMeasuredData(): List<SidoItem>? {
+    suspend fun getSidoMeasuredData(sidoName: String): List<SidoItem>? {
         try {
-            val response = retrofitService.getSidobyulBrownSmog(serviceKey = SERVICE_KEY)
-            if(response.isSuccessful){
+            val response =
+                retrofitService.getSidobyulBrownSmog(serviceKey = SERVICE_KEY, sidoName = sidoName)
+            if (response.isSuccessful) {
                 val body = response.body()
-                body?.let{
+                body?.let {
                     val sidoResponse = it.response
                     val sidoHeader = sidoResponse.header
-                    if(sidoHeader.resultCode == NORMAL_CODE && sidoHeader.resultMsg == NORMAL_MSG) {
+                    if (sidoHeader.resultCode == NORMAL_CODE && sidoHeader.resultMsg == NORMAL_MSG) {
                         return sidoResponse.body.items
                     }
                 }

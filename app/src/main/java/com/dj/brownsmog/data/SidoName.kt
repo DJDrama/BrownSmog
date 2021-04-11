@@ -1,7 +1,7 @@
 package com.dj.brownsmog.data
 
 enum class SidoName(val str: String) {
-    ALL("전국"),
+  //  ALL("전국"),
     SEOUL("서울"),
     BUSAN("부산"),
     DAEGU("대구"),

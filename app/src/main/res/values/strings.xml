@@ -3,4 +3,5 @@
     <string name="brown_smog">미세먼지</string>
     <string name="local_smog">지역별</string>
     <string name="arrow_right">Arrow Right</string>
+    <string name="local_detail">지역별 자세히</string>
 </resources>

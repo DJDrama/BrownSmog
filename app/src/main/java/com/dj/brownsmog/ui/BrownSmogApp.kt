@@ -13,18 +13,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.dj.brownsmog.R
 import com.dj.brownsmog.ui.home.Home
 import com.dj.brownsmog.ui.local.Local
-import com.dj.brownsmog.ui.local.LocalViewModel
+import com.dj.brownsmog.ui.local.LocalDetailScreen
+import com.dj.brownsmog.ui.local.LocalDetailViewModel
 import com.dj.brownsmog.ui.theme.BrownSmogTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun BrownSmogApp() {
@@ -72,14 +75,26 @@ fun BrownSmogApp() {
         ) {
             NavHost(navController, startDestination = Screen.BrownSmog.route) {
                 composable(Screen.BrownSmog.route) {
-                    Home(navController)
+                    Home(navController = navController)
                 }
-                composable(Screen.LocalSmog.route) { navBackStackEntry ->
-                    val viewModel = viewModel<LocalViewModel>(
-                        Screen.LocalSmog.route,
+                composable(Screen.LocalSmog.route) {
+                    Local(onNavigate = {
+                        navController.navigate(route = it)
+                    })
+                }
+                composable(route = Screen.LocalDetail.route + "/{sidoName}",
+                    arguments = listOf(
+                        navArgument("sidoName") {
+                            type = NavType.StringType
+                        }
+                    )) { navBackStackEntry ->
+                    val viewModel = viewModel<LocalDetailViewModel>(
+                        Screen.LocalDetail.route,
                         HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     )
-                    Local(navController, viewModel)
+                    LocalDetailScreen(navController = navController,
+                        viewModel = viewModel,
+                        sidoName = navBackStackEntry.arguments?.getString("sidoName") ?: "")
                 }
             }
         }

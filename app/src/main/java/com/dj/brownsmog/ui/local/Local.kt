@@ -2,6 +2,7 @@ package com.dj.brownsmog.ui.local
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,32 +27,46 @@ import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.navigate
 import com.dj.brownsmog.R
+import com.dj.brownsmog.data.SidoName
 import com.dj.brownsmog.data.model.SidoItem
+import com.dj.brownsmog.ui.Screen
 
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
-fun Local(navController: NavHostController, viewModel: LocalViewModel) {
-    val sidoItems by viewModel.sidoNameItems.collectAsState()
-    SidoList(sidoItems)
+fun Local(onNavigate: (String) -> Unit) {
+    val sidoNames = enumValues<SidoName>().map{
+        it.str
+    }.toList()
+    SidoList(sidoNames, onNavigate=onNavigate)
 }
 
 @Composable
-fun SidoList(set: Set<String>) {
+fun SidoList(list: List<String>, onNavigate: (String)->Unit) {
     LazyColumn {
-        items(set.toList()) { sidoName ->
-            SidoItem(sidoName = sidoName)
+        items(items = list) { sidoName ->
+            SidoItem(sidoName = sidoName, onClick = {
+                val navRoute = Screen.LocalDetail.route + "/${sidoName}"
+                onNavigate(navRoute)
+            })
         }
     }
 }
 
 @Composable
-fun SidoItem(sidoName: String) {
-    Card(Modifier
-        .fillMaxWidth()
-        .padding(8.dp), elevation = 8.dp) {
-        Row(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
-            Text(text="지역: $sidoName", modifier  = Modifier.weight(1f))
+fun SidoItem(sidoName: String, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable(onClick = onClick),
+        elevation = 8.dp,
+        ) {
+        Row(modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()) {
+            Text(text = "지역: $sidoName", modifier = Modifier.weight(1f))
             Icon(
                 imageVector = Icons.Filled.ArrowRight,
                 contentDescription = stringResource(

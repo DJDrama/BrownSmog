@@ -14,33 +14,29 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LocalViewModel
+class LocalDetailViewModel
 @Inject
 constructor(
     private val repository: HomeRepository,
 ) : ViewModel() {
 
-    private val _sidoNameItems: MutableStateFlow<Set<String>> = MutableStateFlow(emptySet())
-    val sidoNameItems: StateFlow<Set<String>>
-        get() = _sidoNameItems
-
     private val _sidoByulItems: MutableStateFlow<List<SidoItem>?> = MutableStateFlow(null)
     val sidoByulItems: StateFlow<List<SidoItem>?>
         get() = _sidoByulItems
 
-    init {
-        getSidoByulItems()
-    }
+    private val _onLoad = MutableStateFlow(false)
+    val onLoad: StateFlow<Boolean>
+        get() = _onLoad
 
-    fun getSidoByulItems() {
+    fun getSidoByulItems(sidoName: String) {
         viewModelScope.launch(IO) {
-            val measuredDatum = repository.getSidoMeasuredData()
-            measuredDatum?.let{
-                _sidoNameItems.value = it.map{sidoItem->
-                    sidoItem.sidoName
-                }.toSet()
+            val measuredDatum = repository.getSidoMeasuredData(sidoName = sidoName)
+            measuredDatum?.let {
                 _sidoByulItems.value = it
             }
         }
+    }
+    fun setLoaded(){
+        _onLoad.value = true
     }
 }
