@@ -1,5 +1,6 @@
 package com.dj.brownsmog.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dj.brownsmog.db.LocationEntity

@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.KEY_ROUTE
@@ -30,6 +31,7 @@ import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.dj.brownsmog.R
 import com.dj.brownsmog.data.model.SidoItem
+import com.dj.brownsmog.ui.home.FindLocationScreen
 import com.dj.brownsmog.ui.home.Home
 import com.dj.brownsmog.ui.home.HomeViewModel
 import com.dj.brownsmog.ui.local.Local
@@ -89,12 +91,18 @@ fun BrownSmogApp() {
                 NavHost(navController, startDestination = Screen.BrownSmog.route) {
                     composable(Screen.BrownSmog.route) { navBackStackEntry ->
                         visible.value = true
-                        val viewModel = viewModel<HomeViewModel>(
-                            Screen.BrownSmog.route,
-                            HiltViewModelFactory(LocalContext.current, navBackStackEntry)
-                        )
-                        Home(viewModel = viewModel)
+                        val viewModel = hiltNavGraphViewModel<HomeViewModel>(backStackEntry = navBackStackEntry)
+                        Home(viewModel = viewModel, onNavigate = {route->
+                            navController.navigate(route=route)
+                        })
                     }
+                    composable(Screen.FindLocation.route){
+                        visible.value = false
+                        val viewModel= navController.hiltNavGraphViewModel<HomeViewModel>(route = Screen.BrownSmog.route)
+                        FindLocationScreen(viewModel = viewModel)
+                    }
+
+
                     composable(Screen.LocalSmog.route) {
                         visible.value = true
                         Local(onNavigate = { route ->
