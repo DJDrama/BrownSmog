@@ -31,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dj.brownsmog.R
 import com.dj.brownsmog.data.model.SidoItem
 import com.dj.brownsmog.ui.home.Home
+import com.dj.brownsmog.ui.home.HomeViewModel
 import com.dj.brownsmog.ui.local.Local
 import com.dj.brownsmog.ui.local.LocalDetailInfoScreen
 import com.dj.brownsmog.ui.local.LocalDetailListScreen
@@ -42,7 +43,7 @@ fun BrownSmogApp() {
     /** DarkTheme false now, TODO: will be fixed **/
     BrownSmogTheme(darkTheme = false) {
         val navController = rememberNavController()
-        val visible = remember{ mutableStateOf(true) }
+        val visible = remember { mutableStateOf(true) }
         Scaffold(
             bottomBar = {
                 if (visible.value) {
@@ -86,12 +87,16 @@ fun BrownSmogApp() {
         ) {
             Box(modifier = Modifier.padding(it)) {
                 NavHost(navController, startDestination = Screen.BrownSmog.route) {
-                    composable(Screen.BrownSmog.route) {
-                        visible.value=true
-                        Home(navController = navController)
+                    composable(Screen.BrownSmog.route) { navBackStackEntry ->
+                        visible.value = true
+                        val viewModel = viewModel<HomeViewModel>(
+                            Screen.BrownSmog.route,
+                            HiltViewModelFactory(LocalContext.current, navBackStackEntry)
+                        )
+                        Home(viewModel = viewModel)
                     }
                     composable(Screen.LocalSmog.route) {
-                        visible.value=true
+                        visible.value = true
                         Local(onNavigate = { route ->
                             navController.navigate(route = route)
                         })
@@ -102,7 +107,7 @@ fun BrownSmogApp() {
                                 type = NavType.StringType
                             }
                         )) { navBackStackEntry ->
-                        visible.value=false
+                        visible.value = false
 
                         val viewModel = viewModel<LocalDetailListViewModel>(
                             Screen.LocalDetailList.route,
@@ -126,7 +131,7 @@ fun BrownSmogApp() {
                                 type = NavType.ParcelableType(SidoItem::class.java)
                             }
                         )) {
-                        visible.value=false
+                        visible.value = false
 
                         navController.previousBackStackEntry?.arguments?.getParcelable<SidoItem>("sidoItem")
                             ?.let { sidoItem ->

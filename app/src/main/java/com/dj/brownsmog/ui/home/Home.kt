@@ -2,10 +2,18 @@ package com.dj.brownsmog.ui.home
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 
 @Composable
-fun Home(navController: NavHostController) {
+fun Home(viewModel: HomeViewModel) {
+    val location = viewModel.myLocation.collectAsState()
+    location.value?.let{
 
-    Text(text="Home")
+    } ?: NoLocationView()
+}
+
+@Composable
+fun NoLocationView(){
+
 }

@@ -1,11 +1,9 @@
 package com.dj.brownsmog.ui.local
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dj.brownsmog.data.model.SidoItem
-import com.dj.brownsmog.repository.HomeRepository
+import com.dj.brownsmog.repository.LocalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +15,7 @@ import javax.inject.Inject
 class LocalDetailListViewModel
 @Inject
 constructor(
-    private val repository: HomeRepository,
+    private val repository: LocalRepository,
 ) : ViewModel() {
 
     private val _sidoByulItems: MutableStateFlow<List<SidoItem>?> = MutableStateFlow(null)
