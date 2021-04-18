@@ -47,7 +47,7 @@ fun SidoList(list: List<String>, onNavigate: (String)->Unit) {
     LazyColumn {
         items(items = list) { sidoName ->
             SidoItem(sidoName = sidoName, onClick = {
-                val navRoute = Screen.LocalDetail.route + "/${sidoName}"
+                val navRoute = Screen.LocalDetailList.route + "/${sidoName}"
                 onNavigate(navRoute)
             })
         }

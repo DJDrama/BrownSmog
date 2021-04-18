@@ -6,7 +6,8 @@ sealed class Screen(val route: String, val resourceId: Int){
     object BrownSmog: Screen("brownsmog", R.string.brown_smog)
     object LocalSmog: Screen("localsmog", R.string.local_smog)
 
-    object LocalDetail: Screen("localdetail", R.string.local_detail)
+    object LocalDetailList: Screen("localdetaillist", R.string.local_detail_list)
+    object LocalDetailInfo: Screen("localdetailinfo", R.string.local_detail_info)
 }
 
 val navItems = listOf(

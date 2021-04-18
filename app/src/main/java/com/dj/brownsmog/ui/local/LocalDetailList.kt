@@ -1,6 +1,5 @@
 package com.dj.brownsmog.ui.local
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,9 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRight
-import androidx.compose.material.icons.outlined.ArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,15 +23,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -45,10 +39,10 @@ import com.dj.brownsmog.data.model.SidoItem
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LocalDetailScreen(
-    navController: NavHostController,
-    viewModel: LocalDetailViewModel,
+fun LocalDetailListScreen(
+    viewModel: LocalDetailListViewModel,
     sidoName: String,
+    onClick: (SidoItem) -> Unit
 ) {
     val onLoad = viewModel.onLoad.collectAsState()
     if (!onLoad.value) {
@@ -75,29 +69,30 @@ fun LocalDetailScreen(
             keyboardController = keyboardController,
         )
         Divider(color = Color.LightGray, thickness = 1.dp, startIndent = 0.dp)
-        LocalDetailList(sidoItemList = sidoItems, query = query.value.text)
+        LocalDetailList(sidoItemList = sidoItems, query = query.value.text, onClick=onClick)
     }
 }
 
 @Composable
-fun LocalDetailList(sidoItemList: List<SidoItem>?, query : String) {
+fun LocalDetailList(sidoItemList: List<SidoItem>?, query : String, onClick: (SidoItem) -> Unit) {
     sidoItemList?.let { list ->
         LazyColumn {
             items(items = list.filter{
                 it.stationName.contains(query)
             }) { sidoItem ->
-                LocalDetailCard(sidoItem = sidoItem)
+                LocalDetailCard(sidoItem = sidoItem, onClick = onClick)
             }
         }
     }
 }
 
 @Composable
-fun LocalDetailCard(sidoItem: SidoItem) {
+fun LocalDetailCard(sidoItem: SidoItem, onClick: (SidoItem) -> Unit) {
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = {onClick(sidoItem)})
             .padding(8.dp),
         elevation = 8.dp) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {

@@ -3,7 +3,8 @@
     <string name="brown_smog">미세먼지</string>
     <string name="local_smog">지역별</string>
     <string name="arrow_right">Arrow Right</string>
-    <string name="local_detail">지역별 자세히</string>
+    <string name="local_detail_list">지역별 자세히</string>
+    <string name="local_detail_info">자세히</string>
     <string name="label_back">back</string>
     <string name="label_search">Search</string>
     <string name="search_place">지역 검색</string>

@@ -1,5 +1,6 @@
 package com.dj.brownsmog.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -26,10 +27,12 @@ import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.dj.brownsmog.R
+import com.dj.brownsmog.data.model.SidoItem
 import com.dj.brownsmog.ui.home.Home
 import com.dj.brownsmog.ui.local.Local
-import com.dj.brownsmog.ui.local.LocalDetailScreen
-import com.dj.brownsmog.ui.local.LocalDetailViewModel
+import com.dj.brownsmog.ui.local.LocalDetailInfoScreen
+import com.dj.brownsmog.ui.local.LocalDetailListScreen
+import com.dj.brownsmog.ui.local.LocalDetailListViewModel
 import com.dj.brownsmog.ui.theme.BrownSmogTheme
 
 @Composable
@@ -82,23 +85,42 @@ fun BrownSmogApp() {
                         Home(navController = navController)
                     }
                     composable(Screen.LocalSmog.route) {
-                        Local(onNavigate = {
-                            navController.navigate(route = it)
+                        Local(onNavigate = { route ->
+                            navController.navigate(route = route)
                         })
                     }
-                    composable(route = Screen.LocalDetail.route + "/{sidoName}",
+                    composable(route = Screen.LocalDetailList.route + "/{sidoName}",
                         arguments = listOf(
                             navArgument("sidoName") {
                                 type = NavType.StringType
                             }
                         )) { navBackStackEntry ->
-                        val viewModel = viewModel<LocalDetailViewModel>(
-                            Screen.LocalDetail.route,
+                        val viewModel = viewModel<LocalDetailListViewModel>(
+                            Screen.LocalDetailList.route,
                             HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                         )
-                        LocalDetailScreen(navController = navController,
+                        LocalDetailListScreen(
                             viewModel = viewModel,
-                            sidoName = navBackStackEntry.arguments?.getString("sidoName") ?: "")
+                            sidoName = navBackStackEntry.arguments?.getString("sidoName") ?: "",
+                            onClick = { sidoItem ->
+                                navController.currentBackStackEntry?.arguments?.putParcelable("sidoItem",
+                                    sidoItem)
+                                navController.navigate(route =
+                                Screen.LocalDetailInfo.route + "/${sidoItem.stationName}"
+                                )
+                            }
+                        )
+                    }
+                    composable(route = Screen.LocalDetailInfo.route + "/{stationName}",
+                        arguments = listOf(
+                            navArgument("sidoItem") {
+                                type = NavType.ParcelableType(SidoItem::class.java)
+                            }
+                        )) {
+                        navController.previousBackStackEntry?.arguments?.getParcelable<SidoItem>("sidoItem")
+                            ?.let { sidoItem ->
+                                LocalDetailInfoScreen(sidoItem = sidoItem)
+                            }
                     }
                 }
             }

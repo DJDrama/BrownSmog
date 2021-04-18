@@ -1,7 +1,9 @@
 package com.dj.brownsmog.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-
+@Parcelize
 data class SidoItem(
     val coFlag: String?,
     val coGrade: String?,
@@ -26,4 +28,4 @@ data class SidoItem(
     val so2Grade: String?,
     val so2Value: String?,
     val stationName: String
-)
+): Parcelable
