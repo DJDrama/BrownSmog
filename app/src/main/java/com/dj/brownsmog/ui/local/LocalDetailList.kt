@@ -42,7 +42,7 @@ import com.dj.brownsmog.data.model.SidoItem
 fun LocalDetailListScreen(
     viewModel: LocalDetailListViewModel,
     sidoName: String,
-    onClick: (SidoItem) -> Unit
+    onClick: (SidoItem) -> Unit,
 ) {
     val onLoad = viewModel.onLoad.collectAsState()
     if (!onLoad.value) {
@@ -69,15 +69,15 @@ fun LocalDetailListScreen(
             keyboardController = keyboardController,
         )
         Divider(color = Color.LightGray, thickness = 1.dp, startIndent = 0.dp)
-        LocalDetailList(sidoItemList = sidoItems, query = query.value.text, onClick=onClick)
+        LocalDetailList(sidoItemList = sidoItems, query = query.value.text, onClick = onClick)
     }
 }
 
 @Composable
-fun LocalDetailList(sidoItemList: List<SidoItem>?, query : String, onClick: (SidoItem) -> Unit) {
+fun LocalDetailList(sidoItemList: List<SidoItem>?, query: String, onClick: (SidoItem) -> Unit) {
     sidoItemList?.let { list ->
         LazyColumn {
-            items(items = list.filter{
+            items(items = list.filter {
                 it.stationName.contains(query)
             }) { sidoItem ->
                 LocalDetailCard(sidoItem = sidoItem, onClick = onClick)
@@ -92,7 +92,7 @@ fun LocalDetailCard(sidoItem: SidoItem, onClick: (SidoItem) -> Unit) {
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = {onClick(sidoItem)})
+            .clickable(onClick = { onClick(sidoItem) })
             .padding(8.dp),
         elevation = 8.dp) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -102,9 +102,9 @@ fun LocalDetailCard(sidoItem: SidoItem, onClick: (SidoItem) -> Unit) {
                 Text(text = sidoItem.stationName,
                     style = TextStyle(fontSize = 18.sp, fontWeight = Bold))
                 Spacer(Modifier.padding(4.dp))
-                DustGradeSetting(value = sidoItem.pm10Grade)
+                DustGradeSetting(title = "미세먼지", value = sidoItem.pm10Grade)
                 Spacer(Modifier.padding(4.dp))
-                DustGradeSetting(value = sidoItem.pm25Grade)
+                DustGradeSetting(title = "초미세먼지", value = sidoItem.pm25Grade)
             }
             Icon(
                 imageVector = Icons.Filled.ArrowRight,
@@ -114,28 +114,3 @@ fun LocalDetailCard(sidoItem: SidoItem, onClick: (SidoItem) -> Unit) {
     }
 }
 
-@Composable
-fun DustGradeSetting(value: String?) {
-    Row {
-        value?.let {
-            Text(text = "초미세먼지 등급: $it")
-            Text(
-                text = when (it.toInt()) {
-                    1 -> "(좋음)"
-                    2 -> "(보통)"
-                    3 -> "(나쁨)"
-                    4 -> "(매우 나쁨)"
-                    else -> "(좋음)"
-                },
-                modifier = Modifier.padding(start = 8.dp),
-                color = when (it.toInt()) {
-                    1 -> Color.Blue
-                    2 -> Color.Green
-                    3 -> Color.Yellow
-                    4 -> Color.Red
-                    else -> Color.Blue
-                },
-                fontWeight = Bold)
-        } ?: Text(text = "미세먼지 등급: 측정 불가")
-    }
-}

@@ -13,6 +13,8 @@ import androidx.compose.material.icons.filled.BlurOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -40,41 +42,44 @@ fun BrownSmogApp() {
     /** DarkTheme false now, TODO: will be fixed **/
     BrownSmogTheme(darkTheme = false) {
         val navController = rememberNavController()
+        val visible = remember{ mutableStateOf(true) }
         Scaffold(
             bottomBar = {
-                BottomNavigation {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-                    BottomNavigationItem(
-                        icon = {
-                            Icon(imageVector = Icons.Filled.BlurOn,
-                                contentDescription = stringResource(
-                                    id = R.string.brown_smog))
-                        },
-                        label = { Text(text = stringResource(id = R.string.brown_smog)) },
-                        selected = currentRoute == navItems[0].route,
-                        onClick = {
-                            navController.navigate(navItems[0].route) {
-                                popUpTo = navController.graph.startDestination
-                                launchSingleTop = true
+                if (visible.value) {
+                    BottomNavigation {
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
+                        val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+                        BottomNavigationItem(
+                            icon = {
+                                Icon(imageVector = Icons.Filled.BlurOn,
+                                    contentDescription = stringResource(
+                                        id = R.string.brown_smog))
+                            },
+                            label = { Text(text = stringResource(id = R.string.brown_smog)) },
+                            selected = currentRoute == navItems[0].route,
+                            onClick = {
+                                navController.navigate(navItems[0].route) {
+                                    popUpTo = navController.graph.startDestination
+                                    launchSingleTop = true
+                                }
                             }
-                        }
-                    )
-                    BottomNavigationItem(
-                        icon = {
-                            Icon(imageVector = Icons.Filled.Place,
-                                contentDescription = stringResource(
-                                    id = R.string.local_smog))
-                        },
-                        label = { Text(text = stringResource(id = R.string.local_smog)) },
-                        selected = currentRoute == navItems[1].route,
-                        onClick = {
-                            navController.navigate(navItems[1].route) {
-                                popUpTo = navController.graph.startDestination
-                                launchSingleTop = true
+                        )
+                        BottomNavigationItem(
+                            icon = {
+                                Icon(imageVector = Icons.Filled.Place,
+                                    contentDescription = stringResource(
+                                        id = R.string.local_smog))
+                            },
+                            label = { Text(text = stringResource(id = R.string.local_smog)) },
+                            selected = currentRoute == navItems[1].route,
+                            onClick = {
+                                navController.navigate(navItems[1].route) {
+                                    popUpTo = navController.graph.startDestination
+                                    launchSingleTop = true
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
 
@@ -82,9 +87,11 @@ fun BrownSmogApp() {
             Box(modifier = Modifier.padding(it)) {
                 NavHost(navController, startDestination = Screen.BrownSmog.route) {
                     composable(Screen.BrownSmog.route) {
+                        visible.value=true
                         Home(navController = navController)
                     }
                     composable(Screen.LocalSmog.route) {
+                        visible.value=true
                         Local(onNavigate = { route ->
                             navController.navigate(route = route)
                         })
@@ -95,6 +102,8 @@ fun BrownSmogApp() {
                                 type = NavType.StringType
                             }
                         )) { navBackStackEntry ->
+                        visible.value=false
+
                         val viewModel = viewModel<LocalDetailListViewModel>(
                             Screen.LocalDetailList.route,
                             HiltViewModelFactory(LocalContext.current, navBackStackEntry)
@@ -117,9 +126,13 @@ fun BrownSmogApp() {
                                 type = NavType.ParcelableType(SidoItem::class.java)
                             }
                         )) {
+                        visible.value=false
+
                         navController.previousBackStackEntry?.arguments?.getParcelable<SidoItem>("sidoItem")
                             ?.let { sidoItem ->
-                                LocalDetailInfoScreen(sidoItem = sidoItem)
+                                LocalDetailInfoScreen(sidoItem = sidoItem, upPress = {
+                                    navController.navigateUp()
+                                })
                             }
                     }
                 }

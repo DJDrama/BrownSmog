@@ -20,9 +20,12 @@ data class SidoItem(
     val pm10Flag: String?,
     val pm10Grade: String?,
     val pm10Value: String?,
+    val pm10Value24: String?,
+
     val pm25Flag: String?,
     val pm25Grade: String?,
     val pm25Value: String?,
+    val pm25Value24: String?,
     val sidoName: String,
     val so2Flag: String?,
     val so2Grade: String?,
