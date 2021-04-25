@@ -22,6 +22,8 @@ constructor(
     val myLocation: StateFlow<LocationEntity?>
         get() = _myLocation
 
+
+
     init {
         getMyViewModel()
     }
