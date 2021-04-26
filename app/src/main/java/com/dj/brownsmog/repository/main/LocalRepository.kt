@@ -1,4 +1,4 @@
-package com.dj.brownsmog.repository
+package com.dj.brownsmog.repository.main
 
 import com.dj.brownsmog.data.model.SidoItem
 import com.dj.brownsmog.network.NORMAL_CODE

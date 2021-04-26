@@ -1,4 +1,4 @@
-package com.dj.brownsmog.repository
+package com.dj.brownsmog.repository.main
 
 import com.dj.brownsmog.db.LocationDao
 import com.dj.brownsmog.db.LocationEntity

@@ -1,4 +1,4 @@
-package com.dj.brownsmog.ui.local
+package com.dj.brownsmog.ui.main.local
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

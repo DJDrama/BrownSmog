@@ -1,6 +1,5 @@
-package com.dj.brownsmog.ui
+package com.dj.brownsmog.ui.main
 
-import androidx.compose.ui.res.stringResource
 import com.dj.brownsmog.R
 
 sealed class Screen(val route: String, val resourceId: Int){

@@ -1,4 +1,4 @@
-package com.dj.brownsmog.ui.local
+package com.dj.brownsmog.ui.main.local
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -33,11 +33,10 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.dj.brownsmog.R
 import com.dj.brownsmog.data.model.SidoItem
 
-@OptIn(ExperimentalComposeUiApi::class)
+@ExperimentalComposeUiApi
 @Composable
 fun LocalDetailListScreen(
     viewModel: LocalDetailListViewModel,

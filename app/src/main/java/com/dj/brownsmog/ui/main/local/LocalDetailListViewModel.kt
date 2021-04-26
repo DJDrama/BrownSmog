@@ -1,9 +1,9 @@
-package com.dj.brownsmog.ui.local
+package com.dj.brownsmog.ui.main.local
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dj.brownsmog.data.model.SidoItem
-import com.dj.brownsmog.repository.LocalRepository
+import com.dj.brownsmog.repository.main.LocalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow

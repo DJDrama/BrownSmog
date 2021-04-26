@@ -1,9 +1,8 @@
-package com.dj.brownsmog.ui.home
+package com.dj.brownsmog.ui.main.home
 
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,9 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavHostController
-import com.dj.brownsmog.ui.Screen
-import com.google.android.gms.common.config.GservicesValue.isInitialized
+import com.dj.brownsmog.ui.main.Screen
 
 @Composable
 fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {

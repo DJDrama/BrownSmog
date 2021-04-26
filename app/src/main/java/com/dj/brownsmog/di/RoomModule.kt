@@ -5,6 +5,7 @@ import com.dj.brownsmog.BaseApplication
 import com.dj.brownsmog.db.AppDatabase
 import com.dj.brownsmog.db.AppDatabase.Companion.DATABASE_NAME
 import com.dj.brownsmog.db.LocationDao
+import com.dj.brownsmog.db.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +31,9 @@ object RoomModule {
         return app.locationDao()
     }
 
+    @Singleton
+    @Provides
+    fun provideUserDao(app: AppDatabase): UserDao{
+        return app.userDao()
+    }
 }

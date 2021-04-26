@@ -10,4 +10,6 @@
     <string name="search_place">지역 검색</string>
     <string name="back">Back</string>
     <string name="find_location">내 위치 찾기</string>
+    <string name="login">Log In</string>
+    <string name="register">Register</string>
 </resources>
