@@ -9,7 +9,7 @@ import androidx.room.Update
 @Dao
 interface UserDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert
     suspend fun register(user: UserEntity): Long
 
     @Query("SELECT id FROM users WHERE user_id = :userId AND password = :password")
@@ -17,4 +17,7 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun getUserInfo(id: Int): UserEntity
+
+    @Query("SELECT COUNT(*) FROM users WHERE user_id = :userId OR nick_name = :nickname")
+    suspend fun checkDuplicates(userId: String, nickname: String): Int
 }

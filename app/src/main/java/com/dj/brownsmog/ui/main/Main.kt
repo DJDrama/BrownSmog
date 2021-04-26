@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BlurOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +39,8 @@ import com.dj.brownsmog.ui.main.local.Local
 import com.dj.brownsmog.ui.main.local.LocalDetailInfoScreen
 import com.dj.brownsmog.ui.main.local.LocalDetailListScreen
 import com.dj.brownsmog.ui.main.local.LocalDetailListViewModel
+import com.dj.brownsmog.ui.main.me.MyInformation
+import com.dj.brownsmog.ui.main.me.UserViewModel
 
 @ExperimentalComposeUiApi
 @Composable
@@ -80,14 +83,30 @@ fun Main(){
                             }
                         }
                     )
+
+                    BottomNavigationItem(
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Person,
+                                contentDescription = stringResource(
+                                    id = R.string.my_information))
+                        },
+                        label = { Text(text = stringResource(id = R.string.my_information)) },
+                        selected = currentRoute == navItems[2].route,
+                        onClick = {
+                            navController.navigate(navItems[2].route) {
+                                popUpTo = navController.graph.startDestination
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
             }
         }
 
     ) {
         Box(modifier = Modifier.padding(it)) {
-            NavHost(navController, startDestination = Screen.BrownSmog.route) {
-                composable(Screen.BrownSmog.route) { navBackStackEntry ->
+            NavHost(navController, startDestination = MainScreen.BrownSmog.route) {
+                composable(MainScreen.BrownSmog.route) { navBackStackEntry ->
                     visible.value = true
                     val viewModel =
                         hiltNavGraphViewModel<HomeViewModel>(backStackEntry = navBackStackEntry)
@@ -95,21 +114,21 @@ fun Main(){
                         navController.navigate(route = route)
                     })
                 }
-                composable(Screen.FindLocation.route) {
+                composable(MainScreen.FindLocation.route) {
                     visible.value = false
                     val viewModel =
-                        navController.hiltNavGraphViewModel<HomeViewModel>(route = Screen.BrownSmog.route)
+                        navController.hiltNavGraphViewModel<HomeViewModel>(route = MainScreen.BrownSmog.route)
                     FindLocationScreen(viewModel = viewModel)
                 }
 
 
-                composable(Screen.LocalSmog.route) {
+                composable(MainScreen.LocalSmog.route) {
                     visible.value = true
                     Local(onNavigate = { route ->
                         navController.navigate(route = route)
                     })
                 }
-                composable(route = Screen.LocalDetailList.route + "/{sidoName}",
+                composable(route = MainScreen.LocalDetailList.route + "/{sidoName}",
                     arguments = listOf(
                         navArgument("sidoName") {
                             type = NavType.StringType
@@ -118,7 +137,7 @@ fun Main(){
                     visible.value = false
 
                     val viewModel = viewModel<LocalDetailListViewModel>(
-                        Screen.LocalDetailList.route,
+                        MainScreen.LocalDetailList.route,
                         HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     )
                     LocalDetailListScreen(
@@ -128,12 +147,12 @@ fun Main(){
                             navController.currentBackStackEntry?.arguments?.putParcelable("sidoItem",
                                 sidoItem)
                             navController.navigate(route =
-                            Screen.LocalDetailInfo.route + "/${sidoItem.stationName}"
+                            MainScreen.LocalDetailInfo.route + "/${sidoItem.stationName}"
                             )
                         }
                     )
                 }
-                composable(route = Screen.LocalDetailInfo.route + "/{stationName}",
+                composable(route = MainScreen.LocalDetailInfo.route + "/{stationName}",
                     arguments = listOf(
                         navArgument("sidoItem") {
                             type = NavType.ParcelableType(SidoItem::class.java)
@@ -148,6 +167,13 @@ fun Main(){
                                 navController.navigateUp()
                             })
                         }
+                }
+
+                composable(MainScreen.MyInformation.route) {
+                    visible.value = true
+                    val viewModel =
+                        navController.hiltNavGraphViewModel<UserViewModel>(route = MainScreen.MyInformation.route)
+                    MyInformation(viewModel)
                 }
             }
         }

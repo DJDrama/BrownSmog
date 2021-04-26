@@ -76,9 +76,9 @@ fun RegisterScreen(viewModel: AuthViewModel) {
             .height(48.dp)
             .padding(horizontal = 24.dp),
             onClick = {
-                viewModel.register(userId = userId.value.toString(),
-                    password = password.value.toString(),
-                    nickName = nickName.value.toString())
+                viewModel.register(userId = userId.value.text,
+                    password = password.value.text,
+                    nickName = nickName.value.text)
             }
         ) {
             Text(text = "가입하기")

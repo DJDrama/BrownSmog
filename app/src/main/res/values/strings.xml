@@ -12,4 +12,5 @@
     <string name="find_location">내 위치 찾기</string>
     <string name="login">Log In</string>
     <string name="register">Register</string>
+    <string name="my_information">내 정보</string>
 </resources>

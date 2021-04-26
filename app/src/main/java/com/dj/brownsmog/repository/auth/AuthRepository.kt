@@ -1,5 +1,6 @@
 package com.dj.brownsmog.repository.auth
 
+import android.util.Log
 import com.dj.brownsmog.datastore.DataStoreImpl
 import com.dj.brownsmog.db.LocationDao
 import com.dj.brownsmog.db.LocationEntity
@@ -38,5 +39,14 @@ constructor(
                 emit(false)
             }
         } ?: emit(false)
+    }
+
+    fun checkDuplicate(userId: String, nickName: String): Flow<Boolean> = flow{
+        val response = userDao.checkDuplicates(userId = userId, nickname = nickName)
+        if(response>0){
+            emit(true)
+        }else{
+            emit(false)
+        }
     }
 }

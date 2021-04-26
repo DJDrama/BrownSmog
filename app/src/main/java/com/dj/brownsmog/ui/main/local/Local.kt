@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dj.brownsmog.R
 import com.dj.brownsmog.data.SidoName
-import com.dj.brownsmog.ui.main.Screen
+import com.dj.brownsmog.ui.main.MainScreen
 
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
@@ -35,7 +35,7 @@ fun SidoList(list: List<String>, onNavigate: (String)->Unit) {
     LazyColumn {
         items(items = list) { sidoName ->
             SidoItem(sidoName = sidoName, onClick = {
-                val navRoute = Screen.LocalDetailList.route + "/${sidoName}"
+                val navRoute = MainScreen.LocalDetailList.route + "/${sidoName}"
                 onNavigate(navRoute)
             })
         }

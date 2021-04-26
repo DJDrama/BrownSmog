@@ -80,8 +80,8 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
             .height(48.dp)
             .padding(horizontal = 24.dp),
             onClick = {
-                viewModel.login(userId = userId.value.toString(),
-                    password = password.value.toString())
+                viewModel.login(userId = userId.value.text,
+                    password = password.value.text)
             }
         ) {
             Text(text = "로그인")

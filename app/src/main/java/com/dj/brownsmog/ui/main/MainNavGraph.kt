@@ -2,16 +2,18 @@ package com.dj.brownsmog.ui.main
 
 import com.dj.brownsmog.R
 
-sealed class Screen(val route: String, val resourceId: Int){
-    object BrownSmog: Screen("brownsmog", R.string.brown_smog)
-    object FindLocation: Screen("findlocation", R.string.find_location)
+sealed class MainScreen(val route: String, val resourceId: Int){
+    object BrownSmog: MainScreen("brownsmog", R.string.brown_smog)
+    object FindLocation: MainScreen("findlocation", R.string.find_location)
+    object MyInformation: MainScreen("myinformation", R.string.my_information)
 
-    object LocalSmog: Screen("localsmog", R.string.local_smog)
-    object LocalDetailList: Screen("localdetaillist", R.string.local_detail_list)
-    object LocalDetailInfo: Screen("localdetailinfo", R.string.local_detail_info)
+    object LocalSmog: MainScreen("localsmog", R.string.local_smog)
+    object LocalDetailList: MainScreen("localdetaillist", R.string.local_detail_list)
+    object LocalDetailInfo: MainScreen("localdetailinfo", R.string.local_detail_info)
 }
 
 val navItems = listOf(
-    Screen.BrownSmog,
-    Screen.LocalSmog
+    MainScreen.BrownSmog,
+    MainScreen.LocalSmog,
+    MainScreen.MyInformation
 )

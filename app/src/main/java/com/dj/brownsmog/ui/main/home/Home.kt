@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.dj.brownsmog.ui.main.Screen
+import com.dj.brownsmog.ui.main.MainScreen
 
 @Composable
 fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
@@ -36,7 +36,7 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
         location.value?.let {
 
         } ?: NoLocationView(onClick = {
-            val navRoute = Screen.FindLocation.route
+            val navRoute = MainScreen.FindLocation.route
             onNavigate(navRoute)
         })
     } else {

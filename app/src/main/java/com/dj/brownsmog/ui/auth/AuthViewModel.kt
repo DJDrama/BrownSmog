@@ -24,12 +24,20 @@ constructor(
 
     fun register(userId: String, password: String, nickName: String) {
         viewModelScope.launch {
-            authRepository.register(userId = userId, password = password, nickName = nickName)
-                .collect {
-                    if (!it) {
-                        _errorMessage.value = "이미 가입되어 있거나 잘못된 시도입니다. 다시 시도해주세요."
-                    }
+            authRepository.checkDuplicate(userId, nickName).collect{
+                if(it){
+                    _errorMessage.value = "이미 가입되어 있는 아이디 혹은 닉네임입니다."
+                }else{
+                    authRepository.register(userId = userId, password = password, nickName = nickName)
+                        .collect {isRegistered->
+                            if (!isRegistered) {
+                                _errorMessage.value = "잘못된 시도입니다. 다시 시도해주세요."
+                            }
+                        }
                 }
+            }
+
+
         }
     }
 
