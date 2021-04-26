@@ -13,7 +13,7 @@ interface UserDao {
     suspend fun register(user: UserEntity): Long
 
     @Query("SELECT id FROM users WHERE user_id = :userId AND password = :password")
-    suspend fun login(userId: String, password: String): Long
+    suspend fun login(userId: String, password: String): Long?
 
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun getUserInfo(id: Int): UserEntity

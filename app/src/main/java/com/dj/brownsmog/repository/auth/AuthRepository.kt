@@ -14,27 +14,29 @@ class AuthRepository
 @Inject
 constructor(
     private val userDao: UserDao,
-    private val dataStoreImpl: DataStoreImpl
+    private val dataStoreImpl: DataStoreImpl,
 ) {
 
-    fun register(userId: String, password: String, nickName: String): Flow<Boolean> = flow{
+    fun register(userId: String, password: String, nickName: String): Flow<Boolean> = flow {
         val userEntity = UserEntity(userId = userId, password = password, nickname = nickName)
         val response = userDao.register(userEntity)
-        if(response>0){
+        if (response > 0) {
             dataStoreImpl.setUserId(response.toInt())
             emit(true)
-        }else{
+        } else {
             emit(false)
         }
     }
 
-    fun login(userId: String, password: String): Flow<Boolean> = flow{
+    fun login(userId: String, password: String): Flow<Boolean> = flow {
         val response = userDao.login(userId = userId, password = password)
-        if(response>0){
-            dataStoreImpl.setUserId(response.toInt())
-            emit(true)
-        }else{
-            emit(false)
-        }
+        response?.let { id ->
+            if (id > 0) {
+                dataStoreImpl.setUserId(response.toInt())
+                emit(true)
+            } else {
+                emit(false)
+            }
+        } ?: emit(false)
     }
 }

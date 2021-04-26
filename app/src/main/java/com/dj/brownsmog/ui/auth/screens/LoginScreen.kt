@@ -1,7 +1,6 @@
 package com.dj.brownsmog.ui.auth.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,10 +28,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.dj.brownsmog.R
+import com.dj.brownsmog.ui.auth.AuthScreen
 import com.dj.brownsmog.ui.auth.AuthViewModel
 
 @Composable
-fun LoginScreen(viewModel: AuthViewModel) {
+fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
     val userId = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
 
@@ -91,7 +91,8 @@ fun LoginScreen(viewModel: AuthViewModel) {
             modifier = Modifier.padding(bottom = 16.dp)) {
             Text("아직 계정이 없으신가요?")
             TextButton(onClick = {
-
+                val navRoute = AuthScreen.RegisterScreen.route
+                onNavigate(navRoute)
             }) {
                 Text("가입하기", color = Color.Blue)
             }
