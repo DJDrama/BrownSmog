@@ -18,10 +18,13 @@ constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    private val _errorMessage = MutableStateFlow("")
-    val errorMessage: StateFlow<String>
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?>
         get() = _errorMessage
 
+    fun setNoError(){
+        _errorMessage.value = null
+    }
     fun register(userId: String, password: String, nickName: String) {
         viewModelScope.launch {
             authRepository.checkDuplicate(userId, nickName).collect{

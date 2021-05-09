@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,9 +32,25 @@ import androidx.compose.ui.unit.dp
 import com.dj.brownsmog.R
 import com.dj.brownsmog.ui.auth.AuthScreen
 import com.dj.brownsmog.ui.auth.AuthViewModel
+import com.dj.brownsmog.ui.dialog.DialogState
+import com.dj.brownsmog.ui.dialog.DialogType
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
+    val errorMessage = viewModel.errorMessage.collectAsState()
+    var dialogState by remember { mutableStateOf(DialogState(false, DialogType.SIMPLE)) }
+    if (dialogState.showDialog) {
+        ShowDialog(dialogState.dialogType, errorMessage.value ?: "") {
+            viewModel.setNoError()
+            dialogState = dialogState.copy(showDialog = false)
+        }
+    }
+    errorMessage.value?.let{
+        dialogState = DialogState(true, DialogType.SIMPLE)
+    }
+
     val userId = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
 
@@ -96,6 +114,28 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
             }) {
                 Text("가입하기", color = Color.Blue)
             }
+        }
+    }
+}
+
+@Composable
+fun ShowDialog(type: DialogType, title: String, onDismiss: ()->Unit){
+    when(type){
+        DialogType.SIMPLE->{
+            AlertDialog(
+                text = {
+                    Text(title)
+                },
+                buttons = {
+                    TextButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text(text = "확인")
+                    }
+                },
+                onDismissRequest = onDismiss
+            )
         }
     }
 }

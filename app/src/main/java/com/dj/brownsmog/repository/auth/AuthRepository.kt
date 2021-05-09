@@ -42,7 +42,7 @@ constructor(
     }
 
     fun checkDuplicate(userId: String, nickName: String): Flow<Boolean> = flow{
-        val response = userDao.checkDuplicates(userId = userId, nickname = nickName)
+        val response = userDao.checkDuplicates(userId = userId.trim(), nickname = nickName.trim())
         if(response>0){
             emit(true)
         }else{
