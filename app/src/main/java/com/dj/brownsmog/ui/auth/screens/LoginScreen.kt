@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -36,7 +37,13 @@ import com.dj.brownsmog.ui.dialog.DialogState
 import com.dj.brownsmog.ui.dialog.DialogType
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 
+@ExperimentalComposeUiApi
 @Composable
 fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
     val errorMessage = viewModel.errorMessage.collectAsState()
@@ -47,9 +54,12 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
             dialogState = dialogState.copy(showDialog = false)
         }
     }
-    errorMessage.value?.let{
+    errorMessage.value?.let {
         dialogState = DialogState(true, DialogType.SIMPLE)
     }
+
+    val (focusRequester) = FocusRequester.createRefs()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val userId = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
@@ -72,7 +82,12 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
             placeholder = { Text("아이디") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusRequester.requestFocus()
+                }
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,8 +103,16 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
             placeholder = { Text("비밀번호") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done),
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    viewModel.login(userId = userId.value.text,
+                        password = password.value.text)
+                }
+            ),
             modifier = Modifier
+                .focusRequester(focusRequester = focusRequester)
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         )
@@ -112,16 +135,16 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigate: (String) -> Unit) {
                 val navRoute = AuthScreen.RegisterScreen.route
                 onNavigate(navRoute)
             }) {
-                Text("가입하기", color = Color.Blue)
+                Text("가입하기", fontWeight = FontWeight.Bold, color = Color.Blue)
             }
         }
     }
 }
 
 @Composable
-fun ShowDialog(type: DialogType, title: String, onDismiss: ()->Unit){
-    when(type){
-        DialogType.SIMPLE->{
+fun ShowDialog(type: DialogType, title: String, onDismiss: () -> Unit) {
+    when (type) {
+        DialogType.SIMPLE -> {
             AlertDialog(
                 text = {
                     Text(title)

@@ -1,6 +1,7 @@
 package com.dj.brownsmog.ui.auth
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dj.brownsmog.ui.auth.screens.LoginScreen
 import com.dj.brownsmog.ui.auth.screens.RegisterScreen
 
+@ExperimentalComposeUiApi
 @Composable
 fun Login() {
     val navController = rememberNavController()
@@ -23,7 +25,9 @@ fun Login() {
         composable(AuthScreen.RegisterScreen.route) {
             val viewModel =
                 navController.hiltNavGraphViewModel<AuthViewModel>(route = AuthScreen.LoginScreen.route)
-            RegisterScreen(viewModel = viewModel)
+            RegisterScreen(viewModel = viewModel, onNavigate = {
+                navController.navigateUp()
+            })
         }
     }
 }
