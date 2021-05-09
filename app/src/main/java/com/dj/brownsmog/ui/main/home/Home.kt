@@ -3,6 +3,7 @@ package com.dj.brownsmog.ui.main.home
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,7 +32,6 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
     val context = LocalContext.current
     val isPermissionGranted = remember { mutableStateOf(false) }
 
-
     if (isPermissionGranted.value) {
         location.value?.let {
 
@@ -40,13 +40,20 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
             onNavigate(navRoute)
         })
     } else {
-        // RequestPermissionHandler(onPermissionResult = { isGranted ->
-        //     isPermissionGranted.value = isGranted
-        // }, content = { requestPermissionLauncher ->
-        //     if (!myLocationPermissionGranted(context)) {
-        //         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        //     }
-        // })
+        RequestPermissionHandler(
+            onPermissionResult = { isGranted ->
+                isPermissionGranted.value = isGranted
+            }, content = { requestPermissionLauncher ->
+                NoLocationView(onClick = {
+                    if (!myLocationPermissionGranted(context)) {
+                        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    } else {
+                        val navRoute = MainScreen.FindLocation.route
+                        onNavigate(navRoute)
+                    }
+                })
+
+            })
     }
 }
 
@@ -70,7 +77,7 @@ fun RequestPermissionHandler(
 ) {
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted->
+    ) { isGranted ->
         onPermissionResult(isGranted)
     }
     content(requestPermissionLauncher)
