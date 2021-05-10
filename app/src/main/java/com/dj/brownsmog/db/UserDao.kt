@@ -9,7 +9,7 @@ import androidx.room.Update
 @Dao
 interface UserDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun register(user: UserEntity): Long
 
     @Query("SELECT id FROM users WHERE user_id = :userId AND password = :password")

@@ -8,7 +8,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun locationDao(): LocationDao
     abstract fun userDao(): UserDao
-
     companion object {
         val DATABASE_NAME = "brownsmog_db"
     }

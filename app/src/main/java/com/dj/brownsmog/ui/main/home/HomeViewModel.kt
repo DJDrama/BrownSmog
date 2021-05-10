@@ -1,9 +1,11 @@
 package com.dj.brownsmog.ui.main.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dj.brownsmog.db.LocationEntity
 import com.dj.brownsmog.repository.main.HomeRepository
+import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,19 +23,33 @@ constructor(
     val myLocation: StateFlow<LocationEntity?>
         get() = _myLocation
 
-
+    private val _locationUpdate = MutableStateFlow(false)
+    val locationUpdate: StateFlow<Boolean>
+        get() = _locationUpdate
 
     init {
-        getMyViewModel()
+        getMyLocation()
     }
 
-    private fun getMyViewModel() {
+    private fun getMyLocation() {
         viewModelScope.launch {
             homeRepository.getMyLocation().collect {
                 it?.let {
                     _myLocation.value = it
+
                 }
             }
         }
+    }
+
+    fun saveMyLocation(latLng: LatLng) {
+        viewModelScope.launch {
+            homeRepository.saveMyLocation(latLng).collect {
+                _locationUpdate.value = it
+            }
+        }
+    }
+    fun setUpdateComplete(){
+        _locationUpdate.value=false
     }
 }

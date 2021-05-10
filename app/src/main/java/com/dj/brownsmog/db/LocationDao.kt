@@ -12,8 +12,8 @@ interface LocationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocation(location: LocationEntity): Long
 
-    @Query("SELECT * FROM locations LIMIT 1")
-    suspend fun getLocation(): LocationEntity?
+    @Query("SELECT * FROM locations WHERE id=:userId LIMIT 1")
+    suspend fun getLocation(userId: Int): LocationEntity?
 
     @Update
     suspend fun updateLocation(location: LocationEntity): Int

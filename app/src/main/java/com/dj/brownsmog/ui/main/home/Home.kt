@@ -30,8 +30,7 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
 
     val location = viewModel.myLocation.collectAsState()
     val context = LocalContext.current
-    val isPermissionGranted = remember { mutableStateOf(false) }
-
+    val isPermissionGranted = remember { mutableStateOf(myLocationPermissionGranted(context)) }
     if (isPermissionGranted.value) {
         location.value?.let {
 

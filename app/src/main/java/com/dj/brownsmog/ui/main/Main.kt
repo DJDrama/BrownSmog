@@ -1,5 +1,6 @@
 package com.dj.brownsmog.ui.main
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -47,6 +48,7 @@ import com.dj.brownsmog.ui.main.me.UserViewModel
 fun Main(){
     val navController = rememberNavController()
     val visible = remember { mutableStateOf(true) }
+    val context = LocalContext.current
     Scaffold(
         bottomBar = {
             if (visible.value) {
@@ -118,7 +120,10 @@ fun Main(){
                     visible.value = false
                     val viewModel =
                         navController.hiltNavGraphViewModel<HomeViewModel>(route = MainScreen.BrownSmog.route)
-                    FindLocationScreen(viewModel = viewModel)
+                    FindLocationScreen(viewModel = viewModel){
+                        navController.navigateUp()
+                        Toast.makeText(context, "위치가 업데이트 되었습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
 

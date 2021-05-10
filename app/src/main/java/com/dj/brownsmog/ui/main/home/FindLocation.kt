@@ -1,20 +1,19 @@
 package com.dj.brownsmog.ui.main.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.WhereToVote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -24,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -36,24 +34,38 @@ import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
 
 @Composable
-fun FindLocationScreen(viewModel: HomeViewModel) {
+fun FindLocationScreen(viewModel: HomeViewModel, onUpdateComplete: ()->Unit) {
     val map = rememberMapViewWithLifeCycle()
     val buttonState = remember { mutableStateOf(MapPointerMovingState.DRAGGING) }
     val zoomLevel = remember { 12f }
 
+    val isLocationUpdated = viewModel.locationUpdate.collectAsState()
+    if(isLocationUpdated.value){
+        viewModel.setUpdateComplete()
+        onUpdateComplete()
+    }
+
+    val initialLatLng = LatLng(37.715133, 126.734086)
     val initialLocationValue = viewModel.myLocation.collectAsState()
     val initialLocation = initialLocationValue.value?.let {
         LatLng(it.latitude, it.longitude)
-    } ?: LatLng(37.715133, 126.734086)
+    } ?: initialLatLng
+
+    val currentLatLng = remember { mutableStateOf(initialLatLng) }
+
 
     Box {
         FindLocationContent(map = map,
             zoomLevel = zoomLevel,
             initialLocation = initialLocation,
-            buttonState = buttonState)
+            buttonState = buttonState) {
+            currentLatLng.value = it
+        }
         CurrentPositionIcon(modifier = Modifier.align(Alignment.Center))
         FindLocationFooter(modifier = Modifier.align(Alignment.BottomCenter),
-            buttonState = buttonState)
+            buttonState = buttonState) {
+            viewModel.saveMyLocation(currentLatLng.value)
+        }
     }
 }
 
@@ -64,20 +76,22 @@ fun FindLocationContent(
     zoomLevel: Float,
     initialLocation: LatLng,
     buttonState: MutableState<MapPointerMovingState>,
+    onCameraIdle: (LatLng) -> Unit,
 ) {
     AndroidView({ map }) { mapView ->
-        mapView.getMapAsync {
-            it.isMyLocationEnabled = true
-            it.animateCamera(
+        mapView.getMapAsync { gMap ->
+            gMap.isMyLocationEnabled = true
+            gMap.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     initialLocation, zoomLevel
                 )
             )
-            it.setOnCameraMoveStartedListener {
+            gMap.setOnCameraMoveStartedListener {
                 buttonState.value = MapPointerMovingState.DRAGGING
             }
-            it.setOnCameraIdleListener {
+            gMap.setOnCameraIdleListener {
                 buttonState.value = MapPointerMovingState.IDLE
+                onCameraIdle(gMap.cameraPosition.target)
             }
         }
     }
@@ -99,6 +113,7 @@ fun CurrentPositionIcon(
 fun FindLocationFooter(
     modifier: Modifier = Modifier,
     buttonState: MutableState<MapPointerMovingState>,
+    onClick: () -> Unit,
 ) {
     Column(
         modifier = modifier.padding(
@@ -123,7 +138,7 @@ fun FindLocationFooter(
                 }),
             onClick = {
                 if (buttonState.value == MapPointerMovingState.IDLE) {
-
+                    onClick()
                 }
             }
         ) {
