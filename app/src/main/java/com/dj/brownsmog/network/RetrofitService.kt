@@ -1,7 +1,8 @@
 package com.dj.brownsmog.network
 
-import com.dj.brownsmog.data.SidoName
-import com.dj.brownsmog.data.response.SidoByulResponse
+import com.dj.brownsmog.data.model.BrownSmogItem
+import com.dj.brownsmog.data.model.SidoItem
+import com.dj.brownsmog.data.response.AirKoreaResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -20,11 +21,24 @@ interface RetrofitService {
     @GET("B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty")
     suspend fun getSidobyulBrownSmog(
         //시도별 미세먼지 현황
-        @Query("pageNo") pageNo: Int=1,
+        @Query("pageNo") pageNo: Int = 1,
         @Query("numOfRows") numOfRows: Int = 1000,
         @Query("sidoName") sidoName: String,
         @Query("returnType") returnType: String = JSON,
         @Query("serviceKey") serviceKey: String,
         @Query("ver") version: String = VERSION,
-    ): Response<SidoByulResponse>
+    ): Response<AirKoreaResponse<SidoItem>>
+
+    //@GET("B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty")
+    //@GET("B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty")
+    @GET("B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty")
+    suspend fun getBrownSmogFromMyLocation(
+        @Query("serviceKey") serviceKey: String,
+        @Query("returnType") returnType: String = JSON,
+        @Query("sidoName") sidoName: String,
+        @Query("pageNo") pageNo: Int = 1,
+        @Query("numOfRows") numOfRows: Int = 1,
+        @Query("dataTerm") dataTerm: String = "DAILY",
+        @Query("ver") version: String = VERSION,
+    ): Response<AirKoreaResponse<BrownSmogItem>>
 }

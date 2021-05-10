@@ -3,12 +3,13 @@ package com.dj.brownsmog.ui.main.home
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
+import android.location.Geocoder
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,19 +23,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.dj.brownsmog.ui.main.MainScreen
+import java.util.Locale
 
 @Composable
 fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
 
     val location = viewModel.myLocation.collectAsState()
     val context = LocalContext.current
-    val isPermissionGranted = remember { mutableStateOf(myLocationPermissionGranted(context)) }
+    val geoCoder = Geocoder(context, Locale.KOREA)
+    val isPermissionGranted = remember { mutableStateOf(false) }
+
+    isPermissionGranted.value = myLocationPermissionGranted(context)
     if (isPermissionGranted.value) {
         location.value?.let {
-
-        } ?: NoLocationView(onClick = {
+            val list = geoCoder.getFromLocation(it.latitude, it.longitude, 10)
+            if (list.isEmpty()) {
+                NoLocationView(text = "현재 위치를 다시 설정해주세요!", onClick = {
+                    val navRoute = MainScreen.FindLocation.route
+                    onNavigate(navRoute)
+                })
+            } else {
+                viewModel.getBrownSmogFromMyLocation(list)
+            }
+        } ?: NoLocationView(text = "현재 위치를 설정해주세요!", onClick = {
             val navRoute = MainScreen.FindLocation.route
             onNavigate(navRoute)
         })
@@ -43,7 +57,7 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
             onPermissionResult = { isGranted ->
                 isPermissionGranted.value = isGranted
             }, content = { requestPermissionLauncher ->
-                NoLocationView(onClick = {
+                NoLocationView(text = "현재 위치를 설정해주세요!", onClick = {
                     if (!myLocationPermissionGranted(context)) {
                         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                     } else {
@@ -57,11 +71,11 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
 }
 
 @Composable
-fun NoLocationView(onClick: () -> Unit) {
+fun NoLocationView(text: String, onClick: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "현재 위치를 설정해주세요!")
+        Text(text = text)
         Spacer(Modifier.padding(4.dp))
         Button(onClick = onClick) {
             Text(text = "내 위치 찾기")
