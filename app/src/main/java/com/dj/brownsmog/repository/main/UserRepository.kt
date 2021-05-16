@@ -1,5 +1,6 @@
 package com.dj.brownsmog.repository.main
 
+import android.util.Log
 import com.dj.brownsmog.datastore.DataStoreImpl
 import com.dj.brownsmog.db.UserDao
 import com.dj.brownsmog.db.UserEntity
@@ -17,5 +18,13 @@ constructor(
     fun getMyInformation(): Flow<UserEntity> = flow {
         val response = userDao.getUserInfo(id = dataStoreImpl.userId.value)
         emit(response)
+    }
+
+    fun exitMember(): Flow<Boolean> = flow {
+        val response = userDao.deleteMember(id = dataStoreImpl.userId.value)
+        if (response > 0)
+            emit(true)
+        else
+            emit(false)
     }
 }

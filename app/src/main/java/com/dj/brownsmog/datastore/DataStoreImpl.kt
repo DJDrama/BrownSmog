@@ -41,6 +41,7 @@ constructor(
         setUserId(-1)
     }
 
+
     private fun observeUser() {
         app.dataStore.data.onEach { pref ->
             pref[USER_ID]?.let {

@@ -1,5 +1,6 @@
 package com.dj.brownsmog.ui.main.me
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dj.brownsmog.data.model.SidoItem
@@ -39,5 +40,14 @@ constructor(
 
     fun logOut(){
         dataStoreImpl.logOut()
+    }
+    fun exit(){
+        viewModelScope.launch {
+            repository.exitMember().collect {
+                if(it){
+                    dataStoreImpl.logOut()
+                }
+            }
+        }
     }
 }

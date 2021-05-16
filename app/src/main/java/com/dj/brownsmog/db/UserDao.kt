@@ -1,6 +1,7 @@
 package com.dj.brownsmog.db
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -20,4 +21,7 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM users WHERE user_id = :userId OR nick_name = :nickname")
     suspend fun checkDuplicates(userId: String, nickname: String): Int
+
+    @Query("DELETE FROM users WHERE id = :id")
+    suspend fun deleteMember(id: Int): Int
 }
