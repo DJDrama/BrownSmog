@@ -111,4 +111,7 @@ dependencies {
     // Viewmodelscope
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
 
+    // Coi
+    implementation "com.google.accompanist:accompanist-coil:0.9.1"
+
 }

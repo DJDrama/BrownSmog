@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,12 +30,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.dj.brownsmog.data.model.Data
 import com.dj.brownsmog.ui.main.MainScreen
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import java.util.Locale
 
 @Composable
@@ -114,10 +118,16 @@ fun BrownSmogContent(data: Data, onLocationReSearch: () -> Unit) {
             data.current?.let {
                 // pollution
                 it.pollution?.let { pollution ->
-                    Text(text = "미세 먼지",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = "미세 먼지",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
+                        Text(text = "측정일: ${pollution.ts.substring(0,10)}")
+                    }
+
                     Row(modifier = Modifier.padding(bottom = 8.dp)) {
                         Text(text = "미세먼지 ${pollution.aqicn}",
                             modifier = Modifier.padding(end = 8.dp))
@@ -161,18 +171,35 @@ fun BrownSmogContent(data: Data, onLocationReSearch: () -> Unit) {
                         }, fontWeight = FontWeight.Bold)
                     }
                 }
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                Divider(modifier = Modifier.height(1.dp))
                 // weather
                 it.weather?.let { weather ->
-                    Text(text = "현재 날씨",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
-                    Text(text = "hu ${weather.hu}")
-                    Text(text = "ic ${weather.ic}")
-                    Text(text = "pr ${weather.pr}")
-                    Text(text = "tp ${weather.tp}")
-                    Text(text = "wd ${weather.wd}")
-                    Text(text = "ws ${weather.ws}")
-                    Text(text = "ts ${weather.ts}")
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = "현재 날씨",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
+                        Text(text = "측정일: ${weather.ts.substring(0,10)}")
+                    }
+                    Image(
+                        painter = rememberCoilPainter("https://www.airvisual.com/images/${weather.ic}.png", fadeIn = true),
+                        contentDescription = "Weather Icon",
+                    )
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "습도: ${weather.hu}%")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "기압: ${weather.pr}hPa")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "온도: ${weather.tp}°C")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "풍향: ${weather.wd}°")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "풍속: ${weather.ws}m/s")
+                    Spacer(modifier = Modifier.padding(4.dp))
+
                 }
 
             }
