@@ -1,25 +1,20 @@
 package com.dj.brownsmog.repository.main
 
 import android.util.Log
-import com.dj.brownsmog.data.model.BrownSmogItem
-import com.dj.brownsmog.data.model.SidoItem
+import com.dj.brownsmog.data.model.Data
 import com.dj.brownsmog.datastore.DataStoreImpl
 import com.dj.brownsmog.db.LocationDao
 import com.dj.brownsmog.db.LocationEntity
-import com.dj.brownsmog.network.NORMAL_CODE
-import com.dj.brownsmog.network.NORMAL_MSG
-import com.dj.brownsmog.network.RetrofitService
-import com.dj.brownsmog.network.SERVICE_KEY
+import com.dj.brownsmog.network.IqAirRetrofitService
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 import javax.inject.Inject
 
 class HomeRepository
 @Inject
 constructor(
-    private val retrofitService: RetrofitService,
+    private val iqAirRetrofitService: IqAirRetrofitService,
     private val locationDao: LocationDao,
     private val dataStoreImpl: DataStoreImpl,
 ) {
@@ -44,18 +39,14 @@ constructor(
             emit(false)
     }
 
-    suspend fun getBrownSmogFromMyLocation(locality: String): List<BrownSmogItem>? {
+    suspend fun getBrownSmogFromMyLocation(latitude: Double, longitude: Double): Data? {
         try {
-            val response =
-                retrofitService.getBrownSmogFromMyLocation(serviceKey = SERVICE_KEY,
-                    sidoName = locality.substring(0, 2))
+            val response = iqAirRetrofitService.getNearestCityData(latitude = latitude, longitude = longitude)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
-                    val airKoreaResponse = it.response
-                    val airKoreaHeader = airKoreaResponse.header
-                    if (airKoreaHeader.resultCode == NORMAL_CODE && airKoreaHeader.resultMsg == NORMAL_MSG) {
-                        return airKoreaResponse.body.items
+                    if( it.status == "success") {
+                        return it.data
                     }
                 }
             }

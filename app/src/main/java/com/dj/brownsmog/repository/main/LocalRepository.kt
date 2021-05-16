@@ -3,7 +3,7 @@ package com.dj.brownsmog.repository.main
 import com.dj.brownsmog.data.model.SidoItem
 import com.dj.brownsmog.network.NORMAL_CODE
 import com.dj.brownsmog.network.NORMAL_MSG
-import com.dj.brownsmog.network.RetrofitService
+import com.dj.brownsmog.network.OpenApiRetrofitService
 import com.dj.brownsmog.network.SERVICE_KEY
 import java.lang.Exception
 import javax.inject.Inject
@@ -11,7 +11,7 @@ import javax.inject.Inject
 class LocalRepository
 @Inject
 constructor(
-    private val retrofitService: RetrofitService,
+    private val retrofitService: OpenApiRetrofitService,
 ) {
 
     suspend fun getSidoMeasuredData(sidoName: String): List<SidoItem>? {

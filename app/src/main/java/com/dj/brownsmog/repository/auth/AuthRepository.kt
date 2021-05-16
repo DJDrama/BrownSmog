@@ -1,12 +1,8 @@
 package com.dj.brownsmog.repository.auth
 
-import android.util.Log
 import com.dj.brownsmog.datastore.DataStoreImpl
-import com.dj.brownsmog.db.LocationDao
-import com.dj.brownsmog.db.LocationEntity
 import com.dj.brownsmog.db.UserDao
 import com.dj.brownsmog.db.UserEntity
-import com.dj.brownsmog.network.RetrofitService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

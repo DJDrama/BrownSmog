@@ -1,7 +1,9 @@
 package com.dj.brownsmog.di
 
-import com.dj.brownsmog.network.BASE_URL
-import com.dj.brownsmog.network.RetrofitService
+import com.dj.brownsmog.network.IQ_AIR_BASE_URL
+import com.dj.brownsmog.network.OPEN_API_BASE_URL
+import com.dj.brownsmog.network.IqAirRetrofitService
+import com.dj.brownsmog.network.OpenApiRetrofitService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -53,12 +55,18 @@ object RetrofitModule {
         return Retrofit.Builder()
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(BASE_URL)
+
     }
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit.Builder): RetrofitService {
-        return retrofit.build().create(RetrofitService::class.java)
+    fun provideOpenApiService(retrofit: Retrofit.Builder): OpenApiRetrofitService {
+        return retrofit.baseUrl(OPEN_API_BASE_URL).build().create(OpenApiRetrofitService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideIqAirApiService(retrofit: Retrofit.Builder): IqAirRetrofitService {
+        return retrofit.baseUrl(IQ_AIR_BASE_URL).build().create(IqAirRetrofitService::class.java)
     }
 }
