@@ -96,6 +96,13 @@ fun BrownSmogContent(data: Data, onLocationReSearch: () -> Unit) {
         .fillMaxSize()
         .padding(horizontal = 16.dp, vertical = 16.dp)) {
         item {
+            // Row {
+            //     Text(text = "내 위치 다시 찾기")
+            // }
+            Spacer(modifier = Modifier.padding(vertical = 8.dp))
+            Divider(modifier = Modifier
+                .height(1.dp))
+
             Row {
                 Text(text = "현재 위치",
                     fontSize = 24.sp,
@@ -125,7 +132,7 @@ fun BrownSmogContent(data: Data, onLocationReSearch: () -> Unit) {
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
-                        Text(text = "측정일: ${pollution.ts.substring(0,10)}")
+                        Text(text = "측정일: ${pollution.ts.substring(0, 10)}")
                     }
 
                     Row(modifier = Modifier.padding(bottom = 8.dp)) {
@@ -182,10 +189,11 @@ fun BrownSmogContent(data: Data, onLocationReSearch: () -> Unit) {
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
-                        Text(text = "측정일: ${weather.ts.substring(0,10)}")
+                        Text(text = "측정일: ${weather.ts.substring(0, 10)}")
                     }
                     Image(
-                        painter = rememberCoilPainter("https://www.airvisual.com/images/${weather.ic}.png", fadeIn = true),
+                        painter = rememberCoilPainter("https://www.airvisual.com/images/${weather.ic}.png",
+                            fadeIn = true),
                         contentDescription = "Weather Icon",
                     )
                     Spacer(modifier = Modifier.padding(4.dp))

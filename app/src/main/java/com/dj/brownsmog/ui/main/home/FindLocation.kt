@@ -45,7 +45,7 @@ fun FindLocationScreen(viewModel: HomeViewModel, onUpdateComplete: ()->Unit) {
         onUpdateComplete()
     }
 
-    val initialLatLng = LatLng(37.715133, 126.734086)
+    val initialLatLng = LatLng(37.55810489467493, 126.99159309267996)
     val initialLocationValue = viewModel.myLocation.collectAsState()
     val initialLocation = initialLocationValue.value?.let {
         LatLng(it.latitude, it.longitude)
