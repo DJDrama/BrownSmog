@@ -104,7 +104,6 @@ fun Main(){
                 }
             }
         }
-
     ) {
         Box(modifier = Modifier.padding(it)) {
             NavHost(navController, startDestination = MainScreen.BrownSmog.route) {
@@ -125,8 +124,6 @@ fun Main(){
                         Toast.makeText(context, "위치가 업데이트 되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
-
-
                 composable(MainScreen.LocalSmog.route) {
                     visible.value = true
                     Local(onNavigate = { route ->

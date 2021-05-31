@@ -2,9 +2,11 @@ package com.dj.brownsmog.repository.main
 
 import android.util.Log
 import com.dj.brownsmog.data.model.Data
+import com.dj.brownsmog.data.model.LocalCounter
 import com.dj.brownsmog.datastore.DataStoreImpl
 import com.dj.brownsmog.db.LocationDao
 import com.dj.brownsmog.db.LocationEntity
+import com.dj.brownsmog.network.CovidApiService
 import com.dj.brownsmog.network.IqAirRetrofitService
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
@@ -55,4 +57,6 @@ constructor(
         }
         return null
     }
+
+
 }

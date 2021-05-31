@@ -21,7 +21,7 @@ constructor(
 ) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
-    private val _userId = mutableStateOf(-1)
+    private val _userId = mutableStateOf(-1) 
     val userId: State<Int>
         get() = _userId
 

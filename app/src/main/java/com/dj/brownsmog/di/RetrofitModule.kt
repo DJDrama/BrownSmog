@@ -1,8 +1,10 @@
 package com.dj.brownsmog.di
 
+import com.dj.brownsmog.network.COVID_BASE_URL
+import com.dj.brownsmog.network.CovidApiService
 import com.dj.brownsmog.network.IQ_AIR_BASE_URL
-import com.dj.brownsmog.network.OPEN_API_BASE_URL
 import com.dj.brownsmog.network.IqAirRetrofitService
+import com.dj.brownsmog.network.OPEN_API_BASE_URL
 import com.dj.brownsmog.network.OpenApiRetrofitService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -68,5 +70,11 @@ object RetrofitModule {
     @Provides
     fun provideIqAirApiService(retrofit: Retrofit.Builder): IqAirRetrofitService {
         return retrofit.baseUrl(IQ_AIR_BASE_URL).build().create(IqAirRetrofitService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCoronaApiService(retrofit: Retrofit.Builder): CovidApiService {
+        return retrofit.baseUrl(COVID_BASE_URL).build().create(CovidApiService::class.java)
     }
 }
