@@ -10,6 +10,8 @@ sealed class MainScreen(val route: String, val resourceId: Int){
     object LocalSmog: MainScreen("localsmog", R.string.local_smog)
     object LocalDetailList: MainScreen("localdetaillist", R.string.local_detail_list)
     object LocalDetailInfo: MainScreen("localdetailinfo", R.string.local_detail_info)
+
+    object CovidCounter: MainScreen("covidcounter", R.string.covid)
 }
 
 val navItems = listOf(

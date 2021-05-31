@@ -33,8 +33,7 @@ constructor(
 
     suspend fun getLocalCounter(): Flow<LocalCounter?> = flow {
         try {
-            val response =
-                covidApiService.getLocalCounter()
+            val response = covidApiService.getLocalCounter()
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let { covidResponse ->

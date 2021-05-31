@@ -9,6 +9,6 @@ interface CovidApiService {
     @GET("korea/")
     suspend fun getLocalCounter(
         @Query("serviceKey")
-        serviceKey: String = SERVICE_KEY
+        serviceKey: String = COVID_SERVICE_KEY
     ): Response<LocalCounter>
 }

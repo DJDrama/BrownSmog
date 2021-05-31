@@ -40,12 +40,14 @@ import com.dj.brownsmog.ui.main.local.Local
 import com.dj.brownsmog.ui.main.local.LocalDetailInfoScreen
 import com.dj.brownsmog.ui.main.local.LocalDetailListScreen
 import com.dj.brownsmog.ui.main.local.LocalDetailListViewModel
+import com.dj.brownsmog.ui.main.me.CovidScreen
+import com.dj.brownsmog.ui.main.me.CovidViewModel
 import com.dj.brownsmog.ui.main.me.MyInformation
 import com.dj.brownsmog.ui.main.me.UserViewModel
 
 @ExperimentalComposeUiApi
 @Composable
-fun Main(){
+fun Main() {
     val navController = rememberNavController()
     val visible = remember { mutableStateOf(true) }
     val context = LocalContext.current
@@ -119,7 +121,7 @@ fun Main(){
                     visible.value = false
                     val viewModel =
                         navController.hiltNavGraphViewModel<HomeViewModel>(route = MainScreen.BrownSmog.route)
-                    FindLocationScreen(viewModel = viewModel){
+                    FindLocationScreen(viewModel = viewModel) {
                         navController.navigateUp()
                         Toast.makeText(context, "위치가 업데이트 되었습니다.", Toast.LENGTH_SHORT).show()
                     }
@@ -175,7 +177,16 @@ fun Main(){
                     visible.value = true
                     val viewModel =
                         navController.hiltNavGraphViewModel<UserViewModel>(route = MainScreen.MyInformation.route)
-                    MyInformation(viewModel)
+                    MyInformation(viewModel, onNavigateCovid = { covidRoute ->
+                        navController.navigate(route = covidRoute)
+                    })
+                }
+
+                composable(MainScreen.CovidCounter.route) { navBackStackEntry ->
+                    visible.value = true
+                    val viewModel =
+                        hiltNavGraphViewModel<CovidViewModel>(backStackEntry = navBackStackEntry)
+                    CovidScreen(viewModel = viewModel)
                 }
             }
         }
