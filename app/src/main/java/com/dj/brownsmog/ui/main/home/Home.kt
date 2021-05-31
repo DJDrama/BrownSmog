@@ -99,9 +99,9 @@ fun BrownSmogContent(data: Data, onLocationReSearch: () -> Unit) {
             // Row {
             //     Text(text = "내 위치 다시 찾기")
             // }
-            Spacer(modifier = Modifier.padding(vertical = 8.dp))
-            Divider(modifier = Modifier
-                .height(1.dp))
+            // Spacer(modifier = Modifier.padding(vertical = 8.dp))
+            // Divider(modifier = Modifier
+            //     .height(1.dp))
 
             Row {
                 Text(text = "현재 위치",

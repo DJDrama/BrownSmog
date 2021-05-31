@@ -34,7 +34,9 @@ constructor(
     private fun getLocalCounter() {
         viewModelScope.launch {
             repository.getLocalCounter().collect {
-                _localCounter.value = it
+                it?.let{
+                    _localCounter.value = it
+                }
             }
         }
     }

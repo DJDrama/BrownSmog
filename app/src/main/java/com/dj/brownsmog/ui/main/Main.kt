@@ -183,10 +183,12 @@ fun Main() {
                 }
 
                 composable(MainScreen.CovidCounter.route) { navBackStackEntry ->
-                    visible.value = true
+                    visible.value = false
                     val viewModel =
                         hiltNavGraphViewModel<CovidViewModel>(backStackEntry = navBackStackEntry)
-                    CovidScreen(viewModel = viewModel)
+                    CovidScreen(viewModel = viewModel, upPress = {
+                        navController.navigateUp()
+                    })
                 }
             }
         }
