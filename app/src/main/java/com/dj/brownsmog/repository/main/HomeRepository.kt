@@ -3,11 +3,14 @@ package com.dj.brownsmog.repository.main
 import android.util.Log
 import com.dj.brownsmog.data.model.Data
 import com.dj.brownsmog.data.model.LocalCounter
+import com.dj.brownsmog.data.model.SidoByul
+import com.dj.brownsmog.data.model.SidoByulCounter
 import com.dj.brownsmog.datastore.DataStoreImpl
 import com.dj.brownsmog.db.LocationDao
 import com.dj.brownsmog.db.LocationEntity
 import com.dj.brownsmog.network.CovidApiService
 import com.dj.brownsmog.network.IqAirRetrofitService
+import com.dj.brownsmog.ui.closestCountryName
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,6 +20,7 @@ class HomeRepository
 @Inject
 constructor(
     private val iqAirRetrofitService: IqAirRetrofitService,
+    private val covidApiService: CovidApiService,
     private val locationDao: LocationDao,
     private val dataStoreImpl: DataStoreImpl,
 ) {
@@ -43,11 +47,12 @@ constructor(
 
     suspend fun getBrownSmogFromMyLocation(latitude: Double, longitude: Double): Data? {
         try {
-            val response = iqAirRetrofitService.getNearestCityData(latitude = latitude, longitude = longitude)
+            val response =
+                iqAirRetrofitService.getNearestCityData(latitude = latitude, longitude = longitude)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
-                    if( it.status == "success") {
+                    if (it.status == "success") {
                         return it.data
                     }
                 }
@@ -58,5 +63,24 @@ constructor(
         return null
     }
 
-
+    suspend fun getCovidInformation(latitude: Double, longitude: Double): SidoByulCounter? {
+        try {
+            val response = covidApiService.getSidoByulCovidData()
+            if (response.isSuccessful) {
+                val body = response.body()
+                body?.let { covidResponse ->
+                    if (covidResponse.resultCode == "0") {
+                        return with(closestCountryName(latitude, longitude)){
+                            covidResponse.list.find {
+                                it.countryName == this
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
 }

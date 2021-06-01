@@ -15,4 +15,5 @@
     <string name="my_information">내 정보</string>
     <string name="where_to_vote">Current Location</string>
     <string name="covid">코로나 현황</string>
+    <string name="combined_data">현재정보</string>
 </resources>

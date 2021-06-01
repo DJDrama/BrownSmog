@@ -1,20 +1,20 @@
 package com.dj.brownsmog.ui.main.home
 
-import android.location.Address
-import android.location.Geocoder
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dj.brownsmog.data.model.Data
+import com.dj.brownsmog.data.model.SidoByulCounter
 import com.dj.brownsmog.db.LocationEntity
 import com.dj.brownsmog.repository.main.HomeRepository
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,7 +36,14 @@ constructor(
     val data: StateFlow<Data?>
         get() = _data
 
-    private var job: Job? = null
+    private val _covidInformation = MutableStateFlow<SidoByulCounter?>(null)
+    val covidInformation: StateFlow<SidoByulCounter?>
+        get() = _covidInformation
+
+
+
+    private var brownSmogJob: Job? = null
+    private var covidJob: Job? = null
 
     init {
         getMyLocation()
@@ -66,11 +73,20 @@ constructor(
     }
 
     fun getBrownSmogFromMyLocation(latitude: Double, longitude: Double) {
-        if(job?.isActive == true)
+        if (brownSmogJob?.isActive == true)
             return
-        job = viewModelScope.launch {
+        brownSmogJob = viewModelScope.launch {
             val res = homeRepository.getBrownSmogFromMyLocation(latitude, longitude)
             _data.value = res
+        }
+    }
+
+    fun getCovidCounter(latitude: Double, longitude: Double) {
+        if (covidJob?.isActive == true)
+            return
+        covidJob = viewModelScope.launch {
+            val res = homeRepository.getCovidInformation(latitude, longitude)
+            _covidInformation.value = res
         }
     }
 }

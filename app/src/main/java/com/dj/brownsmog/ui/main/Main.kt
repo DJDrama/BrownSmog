@@ -61,7 +61,7 @@ fun Main() {
                         icon = {
                             Icon(imageVector = Icons.Filled.BlurOn,
                                 contentDescription = stringResource(
-                                    id = R.string.brown_smog))
+                                    id = R.string.combined_data))
                         },
                         label = { Text(text = stringResource(id = R.string.brown_smog)) },
                         selected = currentRoute == navItems[0].route,

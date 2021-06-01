@@ -36,9 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.dj.brownsmog.data.model.Data
+import com.dj.brownsmog.data.model.SidoByulCounter
 import com.dj.brownsmog.ui.main.MainScreen
 import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.coil.rememberCoilPainter
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.merge
 import java.util.Locale
 
 @Composable
@@ -46,23 +50,27 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
 
     val location = viewModel.myLocation.collectAsState()
     val brownSmogData = viewModel.data.collectAsState()
+    val covidInformation = viewModel.covidInformation.collectAsState()
 
     val context = LocalContext.current
     val isPermissionGranted = remember { mutableStateOf(false) }
 
     location.value?.let {
         viewModel.getBrownSmogFromMyLocation(it.latitude, it.longitude)
+        viewModel.getCovidCounter(it.latitude, it.longitude)
     } /*?: NoLocationView(text = "결과가 없습니다. 현재 위치를 다시 설정해주세요!", onClick = {
         val navRoute = MainScreen.FindLocation.route
         onNavigate(navRoute)
     })*/
-
-    brownSmogData.value?.let {
-        BrownSmogContent(it) {
-            val navRoute = MainScreen.FindLocation.route
-            onNavigate(navRoute)
+    brownSmogData.value?.let {brownSmogData->
+        covidInformation.value?.let{sidoByulCounter->
+            BrownSmogContent(brownSmogData, sidoByulCounter) {
+                val navRoute = MainScreen.FindLocation.route
+                onNavigate(navRoute)
+            }
         }
     }
+
 
     isPermissionGranted.value = myLocationPermissionGranted(context)
     if (isPermissionGranted.value) {
@@ -91,17 +99,11 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
 }
 
 @Composable
-fun BrownSmogContent(data: Data, onLocationReSearch: () -> Unit) {
+fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReSearch: () -> Unit) {
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .padding(horizontal = 16.dp, vertical = 16.dp)) {
         item {
-            // Row {
-            //     Text(text = "내 위치 다시 찾기")
-            // }
-            // Spacer(modifier = Modifier.padding(vertical = 8.dp))
-            // Divider(modifier = Modifier
-            //     .height(1.dp))
 
             Row {
                 Text(text = "현재 위치",
@@ -177,6 +179,29 @@ fun BrownSmogContent(data: Data, onLocationReSearch: () -> Unit) {
                             else -> Color.Red
                         }, fontWeight = FontWeight.Bold)
                     }
+                }
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                Divider(modifier = Modifier.height(1.dp))
+                sidoByulCounter.apply {
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = "코로나19 정보",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
+                    }
+                    Text(text = "가장 가까운 위치: $countryName")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "신규 확진자 수: ${newCase}명")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "완치자 수: ${recovered}명")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "발생률: ${percentage}%")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "전일대비증감-지역발생: ${newCcase}명")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "전일대비증감-해외유입: ${newFcase}명")
                 }
                 Spacer(modifier = Modifier.padding(vertical = 8.dp))
                 Divider(modifier = Modifier.height(1.dp))
