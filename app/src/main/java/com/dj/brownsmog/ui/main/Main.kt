@@ -63,7 +63,7 @@ fun Main() {
                                 contentDescription = stringResource(
                                     id = R.string.combined_data))
                         },
-                        label = { Text(text = stringResource(id = R.string.brown_smog)) },
+                        label = { Text(text = stringResource(id = R.string.combined_data)) },
                         selected = currentRoute == navItems[0].route,
                         onClick = {
                             navController.navigate(navItems[0].route) {

@@ -47,23 +47,30 @@ import java.util.Locale
 
 @Composable
 fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
-
+    // 위치, 미세먼지, 코로나 정보 데이터를 담는 객체들
     val location = viewModel.myLocation.collectAsState()
     val brownSmogData = viewModel.data.collectAsState()
     val covidInformation = viewModel.covidInformation.collectAsState()
 
+    // Jetpack Compose 코드
     val context = LocalContext.current
+
+    // 위치 권한
     val isPermissionGranted = remember { mutableStateOf(false) }
 
-    location.value?.let {
+    // ?.let{} == Java에서는 if(location!=null){} 와 똑같다.
+    location.value?.let { // if(location!=null){}
         viewModel.getBrownSmogFromMyLocation(it.latitude, it.longitude)
         viewModel.getCovidCounter(it.latitude, it.longitude)
     } /*?: NoLocationView(text = "결과가 없습니다. 현재 위치를 다시 설정해주세요!", onClick = {
         val navRoute = MainScreen.FindLocation.route
         onNavigate(navRoute)
     })*/
+
+    // 미세먼지 정보와 코로나 정보가 있을 경우에 아래 코드를 실행한다.
     brownSmogData.value?.let {brownSmogData->
         covidInformation.value?.let{sidoByulCounter->
+            // 화면에 보여지고 있는 정보들을 나타내는 부분
             BrownSmogContent(brownSmogData, sidoByulCounter) {
                 val navRoute = MainScreen.FindLocation.route
                 onNavigate(navRoute)
@@ -72,10 +79,14 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
     }
 
 
+    // 사용자로부터 위도 경도를 구하도록 보여주는 화면
     isPermissionGranted.value = myLocationPermissionGranted(context)
+    // 위치 권한이 있는지 물어봅니다.
     if (isPermissionGranted.value) {
+        // 허용이 되었다? 사용자의 위도 경도 값이 있는지 다시 한번 확인
         location.value?.let {
             viewModel.getBrownSmogFromMyLocation(it.latitude, it.longitude)
+            viewModel.getCovidCounter(it.latitude, it.longitude)
         } ?: NoLocationView(text = "현재 위치를 설정해주세요!", onClick = {
             val navRoute = MainScreen.FindLocation.route
             onNavigate(navRoute)
@@ -98,6 +109,8 @@ fun Home(viewModel: HomeViewModel, onNavigate: (String) -> Unit) {
     }
 }
 
+// 현재 위치, 미세먼지, 코로나 정보, 현재 날씨 정보를 보여주는 UI
+// data는 미세먼지 데이터, sidoByulCounter는 코로나 데이
 @Composable
 fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReSearch: () -> Unit) {
     LazyColumn(modifier = Modifier
@@ -105,7 +118,10 @@ fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReS
         .padding(horizontal = 16.dp, vertical = 16.dp)) {
         item {
 
+            // Row 가로, Column 세로
+            // Bold 굵게
             Row {
+                // Padding(end = 16.dp) Padding은 여백 end는 오른쪽
                 Text(text = "현재 위치",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold, modifier = Modifier.padding(end = 16.dp))
@@ -113,13 +129,14 @@ fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReS
                     Text(text = "내 위치 다시 찾기")
                 }
             }
-
+// PAdding의 vertical은 세로 여백 (상, 하 여백)
             Text(text = "${data.city}, ${data.state}", modifier = Modifier.padding(vertical = 8.dp))
             data.location?.let { loc ->
                 Text(text = "위도: ${loc.coordinates[0]}")
                 Text(text = "경도: ${loc.coordinates[1]}")
             }
-            Spacer(modifier = Modifier.padding(vertical = 8.dp))
+            Spacer(modifier = Modifier.padding(vertical = 8.dp)) // 여백
+            // 한 줄의 구분선 (높이 사이즈는 1)
             Divider(modifier = Modifier
                 .height(1.dp))
 
@@ -140,6 +157,8 @@ fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReS
                     Row(modifier = Modifier.padding(bottom = 8.dp)) {
                         Text(text = "미세먼지 ${pollution.aqicn}",
                             modifier = Modifier.padding(end = 8.dp))
+                        // 자바로 따지면 Switch() Case:, Case:, case:
+                        // aqicn : 미세먼지
                         Text(text = when (pollution.aqicn) {
                             in 0..50 -> "좋음"
                             in 51..100 -> "보통"
@@ -159,6 +178,7 @@ fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReS
                         }, fontWeight = FontWeight.Bold)
                     }
                     Row {
+                        // aqius : 초미세먼지
                         Text(text = "초미세먼지 ${pollution.aqius}",
                             modifier = Modifier.padding(end = 8.dp))
                         Text(text = when (pollution.aqius) {
@@ -182,6 +202,8 @@ fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReS
                 }
                 Spacer(modifier = Modifier.padding(vertical = 8.dp))
                 Divider(modifier = Modifier.height(1.dp))
+                // 코로나 정보
+                // apply는 '이것을 이용하여'
                 sidoByulCounter.apply {
                     Row(modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -216,6 +238,10 @@ fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReS
                             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
                         Text(text = "측정일: ${weather.ts.substring(0, 10)}")
                     }
+
+                    // 이미지 나타내기
+                    // CoilPainter는 단순히 이미지 로딩 Library 입니다.
+                    // http로 시작되는 웹 상에 있는 이미지를 화면에 보여주기 위한 방법
                     Image(
                         painter = rememberCoilPainter("https://www.airvisual.com/images/${weather.ic}.png",
                             fadeIn = true),
@@ -241,12 +267,18 @@ fun BrownSmogContent(data: Data, sidoByulCounter: SidoByulCounter, onLocationReS
     }
 }
 
+// "현재 위치를 지정해주세요"를 보여주는 UI
+// () -> Unit : 코틀린 람다 함수 (Java에서도 많이 쓰지만, 코틀린에서 특화되어있다)
 @Composable
 fun NoLocationView(text: String, onClick: () -> Unit) {
+    //  Column 세로로 화면을 보여주는
+    // modifier.fillMaxSize()는 화면을 꽉 채워라.
+    // verticalArrangement 세로 정렬, horizontal은 가로 정렬
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = text)
+        // Spacer는 단순히 여백을 주기 위한 (4.dp) 여백이 들어갔습니다.
         Spacer(Modifier.padding(4.dp))
         Button(onClick = onClick) {
             Text(text = "내 위치 찾기")
