@@ -1,41 +1,56 @@
-package com.dj.brownsmog.ui.main.local
+package com.dj.brownsmog.ui.main.local.brownsmog
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dj.brownsmog.R
 import com.dj.brownsmog.data.SidoName
+import com.dj.brownsmog.ui.main.AppBar
 import com.dj.brownsmog.ui.main.MainScreen
+import com.dj.brownsmog.ui.main.local.covid.LocalList
 
-@RequiresApi(Build.VERSION_CODES.N)
 @Composable
-fun Local(onNavigate: (String) -> Unit) {
-    val sidoNames = enumValues<SidoName>().map{
+fun LocalBrownSmogList(onNavigate: (String) -> Unit) {
+    val sidoNames = enumValues<SidoName>().map {
         it.str
     }.toList()
-    SidoList(sidoNames, onNavigate=onNavigate)
+
+    Column {
+        AppBar(
+            title = stringResource(R.string.local_brown_smog)
+        ){
+            onNavigate("Back")
+        }
+        Divider(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp))
+        Divider(color = Color.LightGray, thickness = 1.dp, startIndent = 0.dp)
+        SidoList(sidoNames, onNavigate = onNavigate)
+    }
 }
 
 @Composable
-fun SidoList(list: List<String>, onNavigate: (String)->Unit) {
+fun SidoList(list: List<String>, onNavigate: (String) -> Unit) {
     LazyColumn {
         items(items = list) { sidoName ->
             SidoItem(sidoName = sidoName, onClick = {
-                val navRoute = MainScreen.LocalDetailList.route + "/${sidoName}"
+                val navRoute = MainScreen.LocalBrownSmogList.route + "/${sidoName}"
                 onNavigate(navRoute)
             })
         }
@@ -50,7 +65,7 @@ fun SidoItem(sidoName: String, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable(onClick = onClick),
         elevation = 8.dp,
-        ) {
+    ) {
         Row(modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()) {

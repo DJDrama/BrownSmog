@@ -7,15 +7,17 @@ sealed class MainScreen(val route: String, val resourceId: Int){
     object FindLocation: MainScreen("findlocation", R.string.find_location)
     object MyInformation: MainScreen("myinformation", R.string.my_information)
 
-    object LocalSmog: MainScreen("localsmog", R.string.local_smog)
-    object LocalDetailList: MainScreen("localdetaillist", R.string.local_detail_list)
-    object LocalDetailInfo: MainScreen("localdetailinfo", R.string.local_detail_info)
+    object Local: MainScreen("local", R.string.local)
+    object LocalCovidList:MainScreen("localcovidlist", R.string.local_covid)
+
+    object LocalBrownSmogList: MainScreen("localdetaillist", R.string.local_detail_list)
+    object LocalBrownSmogDetailInfo: MainScreen("localdetailinfo", R.string.local_detail_info)
 
     object CovidCounter: MainScreen("covidcounter", R.string.covid)
 }
 
 val navItems = listOf(
     MainScreen.BrownSmog,
-    MainScreen.LocalSmog,
+    MainScreen.Local,
     MainScreen.MyInformation
 )

@@ -1,4 +1,4 @@
-package com.dj.brownsmog.ui.main.local
+package com.dj.brownsmog.ui.main.local.brownsmog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dj.brownsmog.R
 import com.dj.brownsmog.data.model.SidoItem
+import com.dj.brownsmog.ui.main.local.DustGradeSetting
 
 @ExperimentalComposeUiApi
 @Composable

@@ -1,4 +1,4 @@
-package com.dj.brownsmog.ui.main.local
+package com.dj.brownsmog.ui.main.local.brownsmog
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -49,7 +49,7 @@ fun SearchBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         Box(Modifier.fillMaxSize()) {
             if (query.text.isEmpty()) {

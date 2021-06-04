@@ -32,14 +32,19 @@ import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.dj.brownsmog.R
+import com.dj.brownsmog.data.model.SidoByulCounter
 import com.dj.brownsmog.data.model.SidoItem
 import com.dj.brownsmog.ui.main.home.FindLocationScreen
 import com.dj.brownsmog.ui.main.home.Home
 import com.dj.brownsmog.ui.main.home.HomeViewModel
-import com.dj.brownsmog.ui.main.local.Local
-import com.dj.brownsmog.ui.main.local.LocalDetailInfoScreen
-import com.dj.brownsmog.ui.main.local.LocalDetailListScreen
-import com.dj.brownsmog.ui.main.local.LocalDetailListViewModel
+import com.dj.brownsmog.ui.main.local.LocalScreen
+import com.dj.brownsmog.ui.main.local.brownsmog.LocalBrownSmogList
+import com.dj.brownsmog.ui.main.local.brownsmog.LocalDetailInfoScreen
+import com.dj.brownsmog.ui.main.local.brownsmog.LocalDetailListScreen
+import com.dj.brownsmog.ui.main.local.brownsmog.LocalDetailListViewModel
+import com.dj.brownsmog.ui.main.local.covid.LocalCovidDetailScreen
+import com.dj.brownsmog.ui.main.local.covid.LocalCovidList
+import com.dj.brownsmog.ui.main.local.covid.LocalCovidViewModel
 import com.dj.brownsmog.ui.main.me.CovidScreen
 import com.dj.brownsmog.ui.main.me.CovidViewModel
 import com.dj.brownsmog.ui.main.me.MyInformation
@@ -76,9 +81,9 @@ fun Main() {
                         icon = {
                             Icon(imageVector = Icons.Filled.Place,
                                 contentDescription = stringResource(
-                                    id = R.string.local_smog))
+                                    id = R.string.local))
                         },
-                        label = { Text(text = stringResource(id = R.string.local_smog)) },
+                        label = { Text(text = stringResource(id = R.string.local)) },
                         selected = currentRoute == navItems[1].route,
                         onClick = {
                             navController.navigate(navItems[1].route) {
@@ -126,13 +131,49 @@ fun Main() {
                         Toast.makeText(context, "위치가 업데이트 되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
-                composable(MainScreen.LocalSmog.route) {
+                composable(MainScreen.Local.route) {
                     visible.value = true
-                    Local(onNavigate = { route ->
+                    LocalScreen(onNavigate = { route ->
                         navController.navigate(route = route)
                     })
                 }
-                composable(route = MainScreen.LocalDetailList.route + "/{sidoName}",
+                composable(MainScreen.LocalCovidList.route) {
+                    visible.value = false
+                    val viewModel =
+                        navController.hiltNavGraphViewModel<LocalCovidViewModel>(route = MainScreen.LocalCovidList.route)
+                    LocalCovidList(viewModel = viewModel) { route ->
+                        if (route == "Back") {
+                            navController.navigateUp()
+                        } else {
+
+                            navController.navigate(route)
+                        }
+                    }
+                }
+                composable(route = MainScreen.LocalCovidList.route + "/{sidoByulCounter}",
+                    arguments = listOf(
+                        navArgument(name = "sidoByulCounter") {
+                            type = NavType.ParcelableType(SidoByulCounter::class.java)
+                        }
+                    ))
+                { navBackStackEntry ->
+                    visible.value = false
+                    navController.currentBackStackEntry?.arguments?.getParcelable<SidoByulCounter>("sidoByulCounter")
+                        ?.let { sidoByulCounter ->
+                            LocalCovidDetailScreen(sidoByulCounter = sidoByulCounter)
+                        }
+                }
+                composable(MainScreen.LocalBrownSmogList.route) {
+                    visible.value = false
+                    LocalBrownSmogList { route ->
+                        if (route == "Back") {
+                            navController.navigateUp()
+                        } else {
+                            navController.navigate(route)
+                        }
+                    }
+                }
+                composable(route = MainScreen.LocalBrownSmogList.route + "/{sidoName}",
                     arguments = listOf(
                         navArgument("sidoName") {
                             type = NavType.StringType
@@ -141,7 +182,7 @@ fun Main() {
                     visible.value = false
 
                     val viewModel = viewModel<LocalDetailListViewModel>(
-                        MainScreen.LocalDetailList.route,
+                        MainScreen.LocalBrownSmogList.route,
                         HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     )
                     LocalDetailListScreen(
@@ -151,12 +192,12 @@ fun Main() {
                             navController.currentBackStackEntry?.arguments?.putParcelable("sidoItem",
                                 sidoItem)
                             navController.navigate(route =
-                            MainScreen.LocalDetailInfo.route + "/${sidoItem.stationName}"
+                            MainScreen.LocalBrownSmogDetailInfo.route + "/${sidoItem.stationName}"
                             )
                         }
                     )
                 }
-                composable(route = MainScreen.LocalDetailInfo.route + "/{stationName}",
+                composable(route = MainScreen.LocalBrownSmogDetailInfo.route + "/{stationName}",
                     arguments = listOf(
                         navArgument("sidoItem") {
                             type = NavType.ParcelableType(SidoItem::class.java)

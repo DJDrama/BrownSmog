@@ -1,5 +1,8 @@
 package com.dj.brownsmog.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class SidoByul(
     val resultCode: String,
     val resultMessage: String,
@@ -49,6 +52,7 @@ data class SidoByul(
             quarantine)
 }
 
+@Parcelize
 data class SidoByulCounter(
     val countryName: String,
     val newCase: String,
@@ -58,4 +62,4 @@ data class SidoByulCounter(
     val percentage: String,
     val newFcase: String,
     val newCcase: String,
-)
+) : Parcelable

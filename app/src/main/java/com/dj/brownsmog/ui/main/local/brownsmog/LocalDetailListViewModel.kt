@@ -1,4 +1,4 @@
-package com.dj.brownsmog.ui.main.local
+package com.dj.brownsmog.ui.main.local.brownsmog
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
