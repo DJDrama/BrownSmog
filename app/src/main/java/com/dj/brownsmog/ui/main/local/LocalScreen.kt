@@ -37,12 +37,12 @@ fun LocalScreen(onNavigate: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Row{
+        Row {
             Column(modifier = Modifier
                 .wrapContentWidth(align = Alignment.CenterHorizontally)
                 .clickable {
-                 val navRoute = MainScreen.LocalCovidList.route
-                     onNavigate(navRoute)
+                    val navRoute = MainScreen.LocalCovidList.route
+                    onNavigate(navRoute)
                 }) {
                 Icon(imageVector = Icons.Filled.Copyright,
                     modifier = Modifier
@@ -71,10 +71,7 @@ fun LocalScreen(onNavigate: (String) -> Unit) {
             }
         }
     }
-
 }
-
-
 
 @Preview
 @Composable

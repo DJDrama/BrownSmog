@@ -19,7 +19,7 @@ import com.dj.brownsmog.ui.main.MainScreen
 import com.dj.brownsmog.ui.main.local.brownsmog.SidoItem
 
 @Composable
-fun LocalCovidList(viewModel: LocalCovidViewModel, onNavigate: (Any)->Unit) {
+fun LocalCovidList(viewModel: LocalCovidViewModel, onNavigate: (String)->Unit, onClick: (SidoByulCounter)->Unit) {
     val onLoad = viewModel.onLoad.collectAsState()
     if (!onLoad.value) {
         viewModel.setLoaded()
@@ -37,18 +37,17 @@ fun LocalCovidList(viewModel: LocalCovidViewModel, onNavigate: (Any)->Unit) {
             .height(1.dp))
         Divider(color = Color.LightGray, thickness = 1.dp, startIndent = 0.dp)
         sidoByulList.value?.let{
-            LocalList(list = it, onNavigate = onNavigate)
+            LocalList(list = it, onClick = onClick)
         }
     }
 }
 
 @Composable
-fun LocalList(list: List<SidoByulCounter>, onNavigate: (String)->Unit){
+fun LocalList(list: List<SidoByulCounter>, onClick: (SidoByulCounter)->Unit){
     LazyColumn {
         items(items = list) { sidoByulCounter ->
             SidoItem(sidoName = sidoByulCounter.countryName, onClick = {
-                val navRoute = MainScreen.LocalCovidList.route + "/${sidoByulCounter.countryName}"
-                onNavigate(navRoute)
+                onClick(sidoByulCounter)
             })
         }
     }

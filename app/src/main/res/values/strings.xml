@@ -18,4 +18,5 @@
     <string name="local_covid">지역별 코로나 현황</string>
     <string name="local_brown_smog">지역별 미세먼지 현황</string>
     <string name="local">지역별</string>
+    <string name="local_covid_detail">자세히</string>
 </resources>

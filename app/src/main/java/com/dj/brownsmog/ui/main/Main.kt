@@ -1,5 +1,6 @@
 package com.dj.brownsmog.ui.main
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -114,6 +115,7 @@ fun Main() {
     ) {
         Box(modifier = Modifier.padding(it)) {
             NavHost(navController, startDestination = MainScreen.BrownSmog.route) {
+                // 홈 탭
                 composable(MainScreen.BrownSmog.route) { navBackStackEntry ->
                     visible.value = true
                     val viewModel =
@@ -131,38 +133,47 @@ fun Main() {
                         Toast.makeText(context, "위치가 업데이트 되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
+                // 지역별 탭
                 composable(MainScreen.Local.route) {
                     visible.value = true
                     LocalScreen(onNavigate = { route ->
                         navController.navigate(route = route)
                     })
                 }
-                composable(MainScreen.LocalCovidList.route) {
+                // 코로나 지역별 리스트
+                composable(MainScreen.LocalCovidList.route) { navBackStackEntry ->
                     visible.value = false
                     val viewModel =
                         navController.hiltNavGraphViewModel<LocalCovidViewModel>(route = MainScreen.LocalCovidList.route)
-                    LocalCovidList(viewModel = viewModel) { route ->
+                    LocalCovidList(viewModel = viewModel, onNavigate = { route ->
                         if (route == "Back") {
                             navController.navigateUp()
-                        } else {
-
-                            navController.navigate(route)
                         }
-                    }
+                    }, onClick = { sidoByulCounter ->
+                        navController.currentBackStackEntry?.arguments?.putParcelable("sidoByulCounter",
+                            sidoByulCounter)
+                        navController.navigate(route = MainScreen.LocalCovidDetail.route + "/${sidoByulCounter.countryName}")
+                    })
                 }
-                composable(route = MainScreen.LocalCovidList.route + "/{sidoByulCounter}",
+
+                composable(route =
+                MainScreen.LocalCovidDetail.route + "/{countryName}",
                     arguments = listOf(
                         navArgument(name = "sidoByulCounter") {
-                            type = NavType.ParcelableType(SidoByulCounter::class.java)
+                            type = NavType.StringType
                         }
-                    ))
-                { navBackStackEntry ->
+                    )) {
                     visible.value = false
-                    navController.currentBackStackEntry?.arguments?.getParcelable<SidoByulCounter>("sidoByulCounter")
+                    navController.previousBackStackEntry?.arguments?.getParcelable<SidoByulCounter>(
+                        "sidoByulCounter")
                         ?.let { sidoByulCounter ->
-                            LocalCovidDetailScreen(sidoByulCounter = sidoByulCounter)
+                            LocalCovidDetailScreen(sidoByulCounter = sidoByulCounter) {
+                                navController.navigateUp()
+                            }
                         }
                 }
+
+                // 지역별 미세먼지 리스트
                 composable(MainScreen.LocalBrownSmogList.route) {
                     visible.value = false
                     LocalBrownSmogList { route ->
@@ -197,6 +208,7 @@ fun Main() {
                         }
                     )
                 }
+
                 composable(route = MainScreen.LocalBrownSmogDetailInfo.route + "/{stationName}",
                     arguments = listOf(
                         navArgument("sidoItem") {
@@ -214,6 +226,7 @@ fun Main() {
                         }
                 }
 
+                // 내 정보 탭
                 composable(MainScreen.MyInformation.route) {
                     visible.value = true
                     val viewModel =

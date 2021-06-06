@@ -9,6 +9,7 @@ sealed class MainScreen(val route: String, val resourceId: Int){
 
     object Local: MainScreen("local", R.string.local)
     object LocalCovidList:MainScreen("localcovidlist", R.string.local_covid)
+    object LocalCovidDetail: MainScreen("localcoviddetail", R.string.local_covid_detail)
 
     object LocalBrownSmogList: MainScreen("localdetaillist", R.string.local_detail_list)
     object LocalBrownSmogDetailInfo: MainScreen("localdetailinfo", R.string.local_detail_info)
